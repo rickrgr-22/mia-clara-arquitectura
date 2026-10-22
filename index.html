@@ -1,0 +1,1378 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MIA Clara · Arquitectura</title>
+<meta name="description" content="Guía de estudio de la arquitectura, el stack, Docker, Kubernetes, Terraform, Ansible y CI/CD de MIA Clara (Certificación y Gestión).">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230c0a09'/><path d='M32 10 52 30 32 54 12 30z' fill='none' stroke='%23d8ae47' stroke-width='5'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/estilos.css">
+</head>
+<body>
+
+<aside class="barra" aria-label="Lecciones">
+  <div class="marca">
+    <b>MIA Clara · Arquitectura</b>
+    <span>De cero a experto en DevOps y arquitectura</span>
+    <div class="progreso" id="progreso"><i></i></div>
+    <div class="progreso-texto" id="progreso-texto"></div>
+  </div>
+  <nav class="menu" id="menu"></nav>
+</aside>
+
+<div class="principal">
+  <header class="superior">
+    <button class="boton-icono abrir-menu" id="abrir-menu" aria-label="Abrir el menú">☰</button>
+    <div class="buscar">
+      <input type="search" id="buscar" placeholder="Buscar en la guía y en los 792 archivos…  (tecla /)" autocomplete="off" aria-label="Buscar">
+      <div class="resultados" id="resultados"></div>
+    </div>
+    <button class="boton-icono" id="tema" aria-label="Cambiar tema claro u oscuro">◐</button>
+  </header>
+
+  <main class="contenido">
+
+<!-- ======================================================================= 0 -->
+<section class="leccion" id="inicio" data-titulo="Bienvenida y ruta de estudio" data-grupo="Empieza aquí">
+  <span class="etiqueta">Lección 0</span>
+  <h1>Aprende arquitectura de software y DevOps con un sistema real</h1>
+  <p class="entrada">Esta guía disecciona <b>MIA Clara</b>, la plataforma de <b>Certificación</b> y <b>Gestión</b> de centros de rehabilitación,
+  desde el navegador del usuario hasta el disco del servidor en Oracle Cloud. Cada decisión se explica con su <i>por qué</i>,
+  sus alternativas y cuándo convendría cambiarla.</p>
+
+  <div class="rejilla">
+    <div class="tarjeta"><span class="icono">🧩</span><h4>2 aplicaciones</h4><p>Certificación (<code>integracentro-core</code>) y Gestión (<code>integracentro-admin</code>), cada una con su base de datos.</p></div>
+    <div class="tarjeta"><span class="icono">📄</span><h4>792 archivos</h4><p>Todos documentados en el <a href="#archivos">explorador</a> con su capa y su propósito.</p></div>
+    <div class="tarjeta"><span class="icono">🔌</span><h4>~170 endpoints</h4><p>Route Handlers de Next.js en el <a href="#backend/catalogo-apis">catálogo de APIs</a>.</p></div>
+    <div class="tarjeta"><span class="icono">☸️</span><h4>1 clúster k3s</h4><p>Un nodo ARM en Oracle Cloud (capa gratuita), publicado con Cloudflare Tunnel sin abrir puertos.</p></div>
+  </div>
+
+  <h2 id="como-usar">Cómo usar esta guía</h2>
+  <ul>
+    <li>Avanza en orden: cada lección se apoya en la anterior. Al terminar una, márcala como completada (tu avance se guarda en este navegador).</li>
+    <li>Los recuadros <b>«Nivel experto»</b> traen el razonamiento que se espera de un arquitecto senior: trade-offs, riesgos y alternativas.</li>
+    <li>Los <a href="#laboratorios">laboratorios</a> te piden ejecutar comandos reales; el <a href="#examen">examen</a> mide lo que aprendiste.</li>
+    <li>Usa la búsqueda (tecla <kbd>/</kbd>) para encontrar un concepto o cualquier archivo de los dos repositorios.</li>
+  </ul>
+
+  <h2 id="ruta">Ruta de aprendizaje sugerida (8 semanas)</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Semana</th><th>Lecciones</th><th>Resultado esperado</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Panorama, Contenedores C4, Stack</td><td>Explicas en 5 minutos qué hace el sistema, sus piezas y por qué se eligió cada tecnología.</td></tr>
+      <tr><td>2</td><td>Frontend, Backend y APIs</td><td>Sigues una petición desde un botón de React hasta la consulta SQL.</td></tr>
+      <tr><td>3</td><td>Seguridad e identidad, Datos</td><td>Dibujas de memoria el login con MFA y el inicio de sesión único Ed25519; entiendes el modelo multi-tenant.</td></tr>
+      <tr><td>4</td><td>Docker, Kubernetes</td><td>Construyes la imagen, lees cada manifiesto y depuras un pod con <code>kubectl</code>.</td></tr>
+      <tr><td>5</td><td>Terraform, Ansible</td><td>Distingues infraestructura de configuración y modificas un recurso con plan/apply.</td></tr>
+      <tr><td>6</td><td>CI/CD, Red y borde</td><td>Explicas cómo un <code>git push</code> llega a producción y cómo entra una petición sin puertos abiertos.</td></tr>
+      <tr><td>7</td><td>Integraciones, Operación</td><td>Sabes operar, revertir y diagnosticar en producción.</td></tr>
+      <tr><td>8</td><td>Evolución, Laboratorios, Examen</td><td>Propones la siguiente versión de la arquitectura con argumentos.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="clave"><b>La idea central de todo el proyecto</b>
+  Simplicidad deliberada: un monolito modular por aplicación (Next.js hace frontend y API), PostgreSQL como única fuente de verdad,
+  un solo servidor con Kubernetes ligero, y automatización total (Terraform + Ansible + GitHub Actions) para que todo sea reproducible.
+  Es la arquitectura correcta para un equipo pequeño, un presupuesto de casi cero y datos sensibles. Aprenderás también <i>cuándo dejaría de serlo</i>.</div>
+
+  <h2 id="mapa">Mapa del recorrido</h2>
+  <div class="rejilla">
+    <a class="tarjeta" href="#panorama"><h4>1 · Panorama</h4><p>Actores, dominio y contexto.</p></a>
+    <a class="tarjeta" href="#contenedores"><h4>2 · Contenedores (C4)</h4><p>Las piezas y cómo se hablan.</p></a>
+    <a class="tarjeta" href="#stack"><h4>3 · Stack y decisiones</h4><p>Por qué cada tecnología.</p></a>
+    <a class="tarjeta" href="#kubernetes"><h4>9 · Kubernetes</h4><p>El clúster objeto por objeto.</p></a>
+    <a class="tarjeta" href="#cicd"><h4>12 · CI/CD</h4><p>Del push a producción.</p></a>
+    <a class="tarjeta" href="#evolucion"><h4>16 · Evolución</h4><p>Deuda técnica y siguiente versión.</p></a>
+  </div>
+</section>
+
+<!-- ======================================================================= 1 -->
+<section class="leccion" id="panorama" data-titulo="Panorama del sistema" data-grupo="Arquitectura">
+  <span class="etiqueta">Lección 1 · Contexto</span>
+  <h1>Qué problema resuelve y para quién</h1>
+  <p class="entrada">Antes de hablar de tecnología, un arquitecto entiende el dominio. Las decisiones técnicas de MIA Clara salen de tres hechos del negocio:
+  los datos son <b>sensibles</b> (salud y adicciones), los usuarios tienen <b>poca experiencia digital</b> y el presupuesto es <b>casi cero</b>.</p>
+
+  <h2 id="dominio">El dominio</h2>
+  <p>Los centros de rehabilitación con programas de ayuda mutua se supervisan con la <b>Cédula de Supervisión VF1</b>: 6 áreas, 51 criterios y 65 actividades de verificación.
+  Antes era papel. MIA Clara lo vuelve digital y verificable, y además ayuda a los centros a operar día a día.</p>
+  <div class="tabla"><table>
+    <thead><tr><th>Aplicación</th><th>Repositorio</th><th>Dominio</th><th>Propósito</th></tr></thead>
+    <tbody>
+      <tr><td><b>MIA Clara · Certificación</b></td><td><code>integracentro-core</code></td><td><code>certificacion.cj-iap.org</code></td><td>Evidencias georreferenciadas por criterio, dictamen del revisor, motor de puntaje, simulación y actas con QR. Es la <b>dueña de los centros y de las cuentas del personal</b>.</td></tr>
+      <tr><td><b>MIA Clara · Gestión</b></td><td><code>integracentro-admin</code></td><td><code>administracion.cj-iap.org</code></td><td>Operación del centro: expedientes con firma en tableta, pagos con Mercado Pago, tiendita, farmacia, historial clínico, visitas, consejería, Unidad y Servicio, portal de familias.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="actores">Actores (diagrama de contexto C4, nivel 1)</h2>
+  <figure class="diagrama"><pre class="mermaid">
+flowchart LR
+  SA["Superadministrador<br/>red de centros"]
+  RV["Revisor CONASAMA<br/>dictamina y emite actas"]
+  AC["Admin del centro<br/>captura evidencias y opera"]
+  FA["Familiares<br/>portal, pagos, avisos"]
+  OT["Médicos, consejeros,<br/>encargados, servidores"]
+  subgraph MIA["MIA Clara"]
+    C["Certificación"]
+    G["Gestión"]
+  end
+  SA --> C
+  SA --> G
+  RV --> C
+  AC --> C
+  AC --> G
+  FA --> G
+  OT --> G
+  C <-->|"SSO y consultas<br/>entre servicios"| G
+  G --> MP["Mercado Pago"]
+  C --> EXT["Correo SMTP · Telegram ·<br/>OpenStreetMap · SEPOMEX"]
+  G --> EXT2["Correo · Telegram · WhatsApp ·<br/>Google TTS · SEPOMEX"]
+  </pre><figcaption>El revisor de CONASAMA nunca entra a Gestión: los datos personales de los internos no salen del centro. Esa frontera de privacidad es la razón principal de que sean dos aplicaciones.</figcaption></figure>
+
+  <h2 id="roles">Roles y puertas de acceso</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Perfil</th><th>Dónde entra</th><th>Cómo se autentica</th></tr></thead>
+    <tbody>
+      <tr><td>SUPERADMIN, REVISOR, ADMIN_CENTRO, LECTOR</td><td>Certificación</td><td>Correo + contraseña (scrypt) + <b>MFA TOTP obligatorio</b></td></tr>
+      <tr><td>Personal del centro</td><td>Gestión <code>/login</code></td><td><b>Inicio de sesión único</b>: pase firmado Ed25519 emitido por la certificación</td></tr>
+      <tr><td>Familiar</td><td>Gestión <code>/familias</code></td><td>Correo + contraseña, sin MFA (bloqueo por intentos)</td></tr>
+      <tr><td>Encargado de tiendita</td><td>Gestión <code>/caja</code></td><td>Usuario + PIN de 4 dígitos con bloqueo exponencial</td></tr>
+      <tr><td>Consejero / servidor</td><td>Gestión <code>/padrinos</code>, <code>/servidores</code></td><td>Usuario + PIN</td></tr>
+      <tr><td>Médico</td><td>Gestión <code>/medicos</code></td><td>Correo + contraseña de 12+ caracteres + MFA TOTP</td></tr>
+    </tbody>
+  </table></div>
+  <p>Fíjate en el patrón: <b>la fuerza de la autenticación es proporcional al riesgo del dato</b>. Un médico ve historia clínica: MFA. Un encargado de tiendita solo vende con saldo: PIN sencillo, pero con permisos «cerrados por defecto» y bloqueo que se duplica con cada fallo.</p>
+
+  <h2 id="requisitos">Requisitos no funcionales que mandan</h2>
+  <div class="rejilla">
+    <div class="tarjeta"><h4>🔒 Confidencialidad</h4><p>Datos de salud y adicciones: aislamiento multi-tenant, cifrado de secretos, bitácora, mínima exposición (sin nombres en Telegram).</p></div>
+    <div class="tarjeta"><h4>✅ Integridad y no repudio</h4><p>Actas y documentos con huella SHA-256, firmas inmutables (triggers en la BD), evidencias capturadas en vivo con ubicación.</p></div>
+    <div class="tarjeta"><h4>💸 Costo casi cero</h4><p>Oracle Always Free, Cloudflare gratuito, OpenStreetMap, Telegram gratuito. WhatsApp solo donde vale su costo.</p></div>
+    <div class="tarjeta"><h4>👵 Usabilidad extrema</h4><p>Personal con baja escolaridad: botones grandes, PIN, voz en español latino, versión móvil.</p></div>
+    <div class="tarjeta"><h4>🔁 Reproducibilidad</h4><p>Todo el ambiente se reconstruye con <code>make</code>: servidor, clúster, red, DNS, aplicación.</p></div>
+    <div class="tarjeta"><h4>👥 Equipo pequeño</h4><p>Pocas piezas, un lenguaje (TypeScript), sin microservicios ni colas: menos que operar.</p></div>
+  </div>
+
+  <div class="experto"><b>Nivel experto: los atributos de calidad deciden la arquitectura</b>
+  En un examen de arquitectura (TOGAF, ATAM) la pregunta no es «¿qué framework?» sino «¿qué atributos de calidad priorizas y qué sacrificas?».
+  Aquí se priorizó <b>seguridad, integridad, costo y operabilidad</b> por encima de <b>alta disponibilidad</b> y <b>escalabilidad horizontal</b>.
+  Un solo nodo es un punto único de falla aceptado conscientemente: el sistema no es de misión crítica en tiempo real y unas horas de caída
+  no ponen vidas en riesgo. Reconocer y documentar ese trade-off es lo que distingue a un arquitecto.</div>
+</section>
+
+<!-- ======================================================================= 2 -->
+<section class="leccion" id="contenedores" data-titulo="Contenedores y flujo (C4 nivel 2)" data-grupo="Arquitectura">
+  <span class="etiqueta">Lección 2 · Contenedores</span>
+  <h1>Las piezas en ejecución y cómo se comunican</h1>
+  <p class="entrada">En el modelo C4, un «contenedor» es cualquier cosa que se ejecuta y guarda datos: una aplicación web, una base de datos, un job.
+  (No confundir con contenedor Docker, aunque aquí casi coinciden.)</p>
+
+  <figure class="diagrama"><pre class="mermaid">
+flowchart TB
+  U["Navegador o celular"] -->|"HTTPS"| CFE["Borde de Cloudflare<br/>TLS, DNS, CDN"]
+  CFE -->|"túnel saliente"| CD
+  subgraph NODO["Servidor Oracle Cloud ARM · k3s"]
+    subgraph P["namespace integracentro-prod"]
+      CD["cloudflared x2"]
+      UI["integracentro-ui x2<br/>Next.js 16"]
+      PG[("ic-ui-postgres<br/>PostgreSQL")]
+      PV1[["PVC evidencias 10Gi"]]
+      PV2[["PVC datos 5Gi"]]
+      CJ1["CronJob avisos 9:00"]
+    end
+    subgraph A["namespace integracentro-admin"]
+      AD["integracentro-admin x2<br/>Next.js 16"]
+      PGA[("ica-postgres<br/>PostgreSQL")]
+      PV3[["PVC expedientes 10Gi"]]
+      PV4[["PVC datos 5Gi"]]
+      CJ2["CronJob tareas 9:00"]
+    end
+    ING["Ingress NGINX<br/>pruebas de humo"]
+  end
+  CD -->|"Service :80"| UI
+  CD -->|"Service :80"| AD
+  UI --> PG
+  PG --- PV2
+  UI --- PV1
+  AD --> PGA
+  PGA --- PV4
+  AD --- PV3
+  CJ1 -->|"POST avisos-diarios"| UI
+  CJ2 -->|"POST tareas/diarias"| AD
+  AD -->|"SERVICIO_TOKEN<br/>acceso, centros, personal"| UI
+  UI -->|"SERVICIO_TOKEN<br/>reporte para la cédula"| AD
+  ING -.-> UI
+  ING -.-> AD
+  </pre><figcaption>Vista de contenedores en producción. Las flechas entre las dos aplicaciones viajan por la red interna del clúster (<code>*.svc.cluster.local</code>), nunca por Internet.</figcaption></figure>
+
+  <h2 id="piezas">Inventario de piezas</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Pieza</th><th>Tecnología</th><th>Responsabilidad</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td><code>integracentro-ui</code></td><td>Next.js 16 standalone en Node 20</td><td>Interfaz y API de la certificación</td><td>Sin estado (salvo archivos en el PVC)</td></tr>
+      <tr><td><code>ic-ui-postgres</code></td><td>PostgreSQL 15 Alpine</td><td>IAM, cédula, evidencias, actas, bitácora</td><td>Con estado (PVC 5 Gi)</td></tr>
+      <tr><td><code>integracentro-admin</code></td><td>Next.js 16 standalone</td><td>Interfaz y API de Gestión</td><td>Sin estado (salvo PVC de expedientes)</td></tr>
+      <tr><td><code>ica-postgres</code></td><td>PostgreSQL 15 Alpine</td><td>Internos, pagos, farmacia, clínico...</td><td>Con estado</td></tr>
+      <tr><td><code>cloudflared</code></td><td>Conector de Cloudflare Tunnel</td><td>Publica ambos dominios sin abrir puertos</td><td>Sin estado (token en Secret)</td></tr>
+      <tr><td><code>ic-ui-avisos-diarios</code></td><td>CronJob con <code>curlimages/curl</code></td><td>Dispara los avisos de vencimiento a las 9:00 (México)</td><td>Efímero</td></tr>
+      <tr><td><code>ica-tareas-diarias</code></td><td>CronJob con <code>curlimages/curl</code></td><td>Cuotas, recordatorios de pago, visitas, farmacia</td><td>Efímero</td></tr>
+      <tr><td>Ingress NGINX</td><td>ingress-nginx (baremetal)</td><td>Entrada HTTPS interna para las pruebas de humo y el ambiente local</td><td>Sin estado</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="vida-peticion">La vida de una petición, paso a paso</h2>
+  <p>Ejemplo: el administrador de un centro sube una foto como evidencia desde su celular.</p>
+  <figure class="diagrama"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant Cel as Celular
+  participant CF as Cloudflare
+  participant T as cloudflared
+  participant N as Next.js (pod)
+  participant DB as PostgreSQL
+  participant FS as PVC evidencias
+  Cel->>CF: POST /api/cedula/capturas (cookie de sesión)
+  CF->>T: por el túnel ya abierto
+  T->>N: http://integracentro-ui...svc:80
+  N->>N: proxy.ts valida firma de la cookie
+  N->>DB: obtenerSesion() revalida usuario, MFA y centro
+  N-->>Cel: token de captura HMAC, 5 min, un solo uso
+  Cel->>Cel: getUserMedia toma la foto y Geolocation da la ubicación
+  Cel->>CF: POST /api/cedula/evidencias (foto, token, lat, lon, precisión)
+  CF->>T: túnel
+  T->>N: Service
+  N->>N: verifica token, tipo real por bytes, tamaño, distancia al centro
+  N->>FS: guarda centro/uuid.jpg (nunca sobrescribe)
+  N->>DB: BEGIN, INSERT evidencias + bitácora, COMMIT
+  N-->>Cel: 201 Evidencia cargada a 23 m del centro
+  </pre><figcaption>Si el INSERT falla, el archivo recién escrito se borra: así no quedan archivos huérfanos en el volumen (<code>app/api/cedula/evidencias/route.ts</code>).</figcaption></figure>
+
+  <h2 id="comunicacion">Estilos de comunicación usados</h2>
+  <ul>
+    <li><b>Síncrona HTTP/JSON</b> entre navegador y API, y entre las dos aplicaciones (con <code>SERVICIO_TOKEN</code> por la red interna).</li>
+    <li><b>Redirecciones del navegador</b> para el inicio de sesión único (el pase viaja por el navegador, no de servidor a servidor).</li>
+    <li><b>Webhooks entrantes</b>: Mercado Pago, Telegram y WhatsApp llaman a Gestión.</li>
+    <li><b>Programada</b>: CronJobs de Kubernetes que llaman a un endpoint interno protegido con token.</li>
+    <li><b>Sin mensajería asíncrona</b> (sin Kafka, RabbitMQ ni colas): los volúmenes no lo justifican y cada aviso guarda en la BD que ya se envió, lo que da idempotencia.</li>
+  </ul>
+
+  <div class="experto"><b>Nivel experto: el patrón «cron + endpoint idempotente»</b>
+  En vez de un worker permanente, un CronJob ejecuta <code>curl</code> contra un endpoint de la propia app. La lógica vive en el mismo código y despliegue,
+  el job no necesita la imagen de la app ni credenciales de BD, y la idempotencia la garantiza la base de datos (tablas como
+  <code>evidencias_vigencia_avisos</code>, <code>visitas_avisos</code>, <code>farmacia_avisos</code> registran cada envío). Si el job corre dos veces, nadie recibe dos correos.
+  <code>concurrencyPolicy: Forbid</code> evita dos ejecuciones simultáneas. Su límite: un trabajo de más de 5 minutos (el <code>--max-time 300</code>) debería moverse a una cola.</div>
+</section>
+
+<!-- ======================================================================= 3 -->
+<section class="leccion" id="stack" data-titulo="Stack tecnológico y decisiones" data-grupo="Arquitectura">
+  <span class="etiqueta">Lección 3 · Decisiones de arquitectura</span>
+  <h1>¿Por qué este stack fue la mejor opción?</h1>
+  <p class="entrada">Una tecnología no es «la mejor» en abstracto: es la mejor <b>para un contexto</b>. Cada decisión se presenta aquí como un
+  <b>ADR</b> (Architecture Decision Record): contexto, decisión, alternativas y consecuencias.</p>
+
+  <h2 id="tabla-stack">El stack completo</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Capa</th><th>Tecnología</th><th>Versión</th></tr></thead>
+    <tbody>
+      <tr><td>Framework web (UI + API)</td><td>Next.js (App Router, Route Handlers, Proxy)</td><td>16.3</td></tr>
+      <tr><td>Biblioteca de UI</td><td>React</td><td>19.2</td></tr>
+      <tr><td>Lenguaje</td><td>TypeScript (strict)</td><td>5.9</td></tr>
+      <tr><td>Estilos</td><td>Tailwind CSS (+ PostCSS)</td><td>4.3</td></tr>
+      <tr><td>Runtime</td><td>Node.js (Alpine)</td><td>20</td></tr>
+      <tr><td>Base de datos</td><td>PostgreSQL con <code>pg</code> (SQL directo)</td><td>15 en el clúster, 16 en CI</td></tr>
+      <tr><td>PDF / QR / correo</td><td><code>pdf-lib</code>, <code>qrcode</code>, <code>nodemailer</code></td><td>—</td></tr>
+      <tr><td>Mapas</td><td>Leaflet + OpenStreetMap + Nominatim</td><td>1.9</td></tr>
+      <tr><td>Criptografía</td><td><code>node:crypto</code> (scrypt, HKDF, AES-GCM, HMAC, Ed25519)</td><td>nativa</td></tr>
+      <tr><td>Contenedores</td><td>Docker multi-etapa, salida standalone</td><td>—</td></tr>
+      <tr><td>Orquestación</td><td>k3s (producción) y Minikube (local)</td><td>—</td></tr>
+      <tr><td>Infraestructura como código</td><td>Terraform: providers oci, kubernetes, cloudflare</td><td>≥ 1.6</td></tr>
+      <tr><td>Configuración y despliegue</td><td>Ansible (<code>kubernetes.core</code>) + Makefile</td><td>—</td></tr>
+      <tr><td>CI/CD</td><td>GitHub Actions: runners hospedados + self-hosted ARM64</td><td>—</td></tr>
+      <tr><td>Nube</td><td>Oracle Cloud Always Free (Querétaro), Cloudflare</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="adr-next">ADR-01 · Next.js como monolito full-stack</h2>
+  <p><b>Contexto:</b> equipo de una persona, muchas pantallas con formularios, datos sensibles que conviene renderizar en el servidor.</p>
+  <p><b>Decisión:</b> una aplicación Next.js por producto que contiene la interfaz (React Server y Client Components) <i>y</i> la API (Route Handlers). Un lenguaje, un build, una imagen, un despliegue.</p>
+  <div class="tabla"><table>
+    <thead><tr><th>Alternativa</th><th>Por qué no</th></tr></thead>
+    <tbody>
+      <tr><td>SPA (React/Vite) + API separada (NestJS, FastAPI, Spring)</td><td>Dos proyectos, dos imágenes, CORS, contratos duplicados. Doble de operación sin beneficio para este tamaño.</td></tr>
+      <tr><td>Microservicios</td><td>Complejidad distribuida (red, trazas, versiones) sin un equipo que la justifique. Ley de Conway: 1 equipo → 1 servicio por producto.</td></tr>
+      <tr><td>Laravel / Django (MVC clásico)</td><td>Válidos, pero la interfaz rica (cámara, firma en canvas, mapas, guía en vivo) pide React; Next.js lo da sin segundo lenguaje.</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Consecuencias:</b> la seguridad se centraliza (cookie HttpOnly, sin tokens en JavaScript), el render en servidor evita exponer datos de más y el tipado se comparte entre cliente y servidor (<code>lib/auth/permisos.ts</code> lo usan ambos). Costo: acoplamiento al ciclo de versiones de Next.js (el repo incluye <code>AGENTS.md</code> porque la v16 rompió convenciones, p. ej. <code>middleware</code> pasó a <code>proxy.ts</code>).</p>
+
+  <h2 id="adr-dos-apps">ADR-02 · Dos aplicaciones y no una</h2>
+  <p>Certificación y Gestión pudieron ser una sola app. Se separaron por <b>frontera de datos y de confianza</b>: el revisor de CONASAMA no debe poder ver jamás un expediente clínico, ni por error de permisos.
+  Con dos bases de datos y dos despliegues, ese aislamiento es físico, no solo lógico. Además cada una tiene su ciclo de versiones (Gestión cambia mucho más).</p>
+  <p>Para no duplicar identidad, la certificación es el <b>proveedor de identidad</b> (dueña de cuentas y centros) y Gestión confía en ella vía SSO. Es el patrón de <i>bounded contexts</i> de DDD con un contexto «upstream» (certificación) y otro «downstream» (Gestión).</p>
+
+  <h2 id="adr-postgres">ADR-03 · PostgreSQL con SQL directo (sin ORM)</h2>
+  <p><b>Por qué PostgreSQL:</b> datos fuertemente relacionales (centros → criterios → evidencias → dictámenes), transacciones ACID para dinero (recibos, monederos), triggers para inmutabilidad, <code>jsonb</code> para resultados congelados de actas, funciones PL/pgSQL (<code>borrar_centro</code>). Un NoSQL complicaría todo eso.</p>
+  <p><b>Por qué sin ORM (Prisma, TypeORM, Drizzle):</b> las consultas son explícitas, parametrizadas (<code>$1, $2</code>) y revisables; las migraciones son SQL puro idempotente que entiende cualquier DBA; cero dependencias pesadas y cero «magia» en el build Docker.
+  El costo es escribir más SQL y mapear tipos a mano.</p>
+
+  <h2 id="adr-k3s">ADR-04 · Kubernetes ligero (k3s) en un solo nodo</h2>
+  <p>¿Kubernetes para un solo servidor? Sí, por tres razones: (1) <b>despliegues declarativos</b> con rollout sin caída y rollback de un comando; (2) <b>paridad</b> exacta entre la Mac (Minikube) y producción (k3s) con los mismos manifiestos; (3) primitivas listas: Secrets, probes, CronJobs, límites de recursos, reinicio automático.</p>
+  <div class="tabla"><table>
+    <thead><tr><th>Alternativa</th><th>Trade-off</th></tr></thead>
+    <tbody>
+      <tr><td>Docker Compose + systemd</td><td>Más simple, pero sin rollout progresivo, probes ni CronJobs nativos; la paridad con local se pierde.</td></tr>
+      <tr><td>EKS / GKE / AKS / OKE administrado</td><td>Alta disponibilidad real, pero cuesta dinero (plano de control, balanceadores) y rompe el presupuesto cero.</td></tr>
+      <tr><td>PaaS (Vercel, Render, Fly.io)</td><td>Cero operación, pero datos sensibles fuera de México, costo por uso y menos control (volúmenes, CronJobs, red interna).</td></tr>
+    </tbody>
+  </table></div>
+  <p>k3s es Kubernetes certificado empaquetado en un solo binario, ideal para ARM y servidores pequeños. Se instala sin Traefik (se usa NGINX) y con <code>--docker</code> para que la imagen que construye Docker quede visible para el clúster sin registro.</p>
+
+  <h2 id="adr-oracle">ADR-05 · Oracle Cloud Always Free en Querétaro</h2>
+  <p>La capa gratuita de Oracle ofrece hasta 4 núcleos ARM Ampere, 24 GB de RAM y 200 GB de disco <b>sin costo permanente</b>, algo que no igualan otras nubes. La región <code>mx-queretaro-1</code> mantiene los datos en México (relevante para datos de salud) y con baja latencia para los usuarios.
+  El Terraform crea una <b>cuota de cuenta</b> que impide, venga de donde venga, rebasar la capa gratuita: una guardia financiera como código.</p>
+
+  <h2 id="adr-cloudflare">ADR-06 · Cloudflare Tunnel en vez de abrir puertos</h2>
+  <p>El servidor <b>no acepta tráfico web entrante</b>: la lista de seguridad de Oracle solo permite SSH desde una red concreta. El conector <code>cloudflared</code> abre una conexión <i>saliente</i> hacia Cloudflare, y por ahí entra el tráfico. Ventajas: superficie de ataque mínima, TLS válido automático, protección DDoS, sin balanceador de pago y mover el clúster a otro servidor no exige cambiar el DNS.</p>
+
+  <h2 id="adr-terraform-ansible">ADR-07 · Terraform + Ansible (y no solo uno)</h2>
+  <p>Regla aplicada: <b>Terraform para lo que tiene ciclo de vida de infraestructura</b> (servidor, red, cuotas, DNS, túnel, namespace, volúmenes) y <b>Ansible para lo que cambia en cada versión</b> (construir la imagen, secretos, migraciones, manifiestos de la app, pruebas de humo).
+  Terraform guarda estado y calcula diferencias; Ansible ejecuta pasos ordenados e idempotentes. Unirlos con <code>terraform output -json</code> evita repetir nombres.</p>
+
+  <h2 id="adr-actions">ADR-08 · GitHub Actions con runner self-hosted</h2>
+  <p>El CI corre en runners de GitHub (gratis, aislados, desechables). El CD corre en un runner <b>dentro del propio servidor</b>, así el despliegue no necesita exponer la API de Kubernetes a Internet ni guardar un kubeconfig en GitHub. Es un modelo «pull» parecido a GitOps: el servidor va a buscar el trabajo.</p>
+
+  <h2 id="adr-crypto">ADR-09 · Criptografía nativa en vez de librerías de autenticación</h2>
+  <p>En lugar de NextAuth/Auth.js o un IdP (Keycloak, Auth0), la autenticación usa <code>node:crypto</code>: scrypt, TOTP RFC 6238 propio, HMAC para cookies y Ed25519 para el SSO. Ventajas: cero dependencias en el componente más crítico, control total (revocación inmediata por <code>sesion_version</code>, MFA obligatorio para todos). Riesgo: «no hagas tu propia cripto» aplica a inventar algoritmos, no a usar primitivas estándar correctamente; aun así, exige pruebas y revisión cuidadosa.</p>
+
+  <h2 id="adr-gratis">ADR-10 · Servicios externos gratuitos primero</h2>
+  <ul>
+    <li><b>OpenStreetMap + Nominatim</b> para geocodificar (Google solo si hay clave).</li>
+    <li><b>Telegram</b> como canal de avisos (gratis), y <b>WhatsApp Cloud API</b> solo para el aniversario porque cada mensaje cuesta.</li>
+    <li><b>Web Speech API</b> del dispositivo para la voz, y Google TTS opcional por centro con registro de consumo (<code>voz_consumo</code>).</li>
+    <li><b>SMTP estándar</b> (nodemailer): cualquier proveedor sirve, sin amarrarse a uno.</li>
+  </ul>
+
+  <div class="experto"><b>Nivel experto: costo total de propiedad (TCO)</b>
+  Esta arquitectura cuesta prácticamente $0 al mes en infraestructura. Su «costo» es tiempo de operación de una persona.
+  Un arquitecto debe poder decir cuándo eso cambia: si llegan cientos de centros, o se firma un SLA de disponibilidad, o entra un equipo de 5 personas,
+  conviene pasar a Kubernetes administrado multi-nodo, una base de datos administrada con respaldos automáticos y un registro de imágenes. La lección <a href="#evolucion">Evolución</a> lo detalla.</div>
+</section>
+
+<!-- ======================================================================= 4 -->
+<section class="leccion" id="frontend" data-titulo="Frontend: Next.js y React" data-grupo="Aplicación">
+  <span class="etiqueta">Lección 4 · Frontend</span>
+  <h1>La interfaz: App Router, Server y Client Components</h1>
+  <p class="entrada">Next.js 16 con el <b>App Router</b> organiza la interfaz como un árbol de carpetas: cada carpeta es un segmento de URL y ciertos archivos tienen un significado especial.</p>
+
+  <h2 id="convenciones">Convenciones de archivos que verás en todo el repo</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Archivo</th><th>Significado</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td><code>page.tsx</code></td><td>Página de esa ruta. Por defecto es <b>Server Component</b>.</td><td><code>app/(dashboard)/centros/page.tsx</code> → <code>/centros</code></td></tr>
+      <tr><td><code>layout.tsx</code></td><td>Marco que envuelve a las páginas hijas y persiste entre navegaciones.</td><td><code>app/(dashboard)/layout.tsx</code> valida la sesión</td></tr>
+      <tr><td><code>route.ts</code></td><td>Endpoint HTTP (Route Handler): exporta <code>GET</code>, <code>POST</code>...</td><td><code>app/api/usuarios/route.ts</code></td></tr>
+      <tr><td><code>(grupo)/</code></td><td>Grupo de rutas: organiza sin afectar la URL.</td><td><code>(dashboard)</code>, <code>(portal)</code>, <code>(turno)</code></td></tr>
+      <tr><td><code>[id]/</code></td><td>Segmento dinámico.</td><td><code>actas/[id]/page.tsx</code></td></tr>
+      <tr><td><code>icon.png</code>, <code>apple-icon.png</code></td><td>Íconos detectados por convención.</td><td><code>app/icon.png</code></td></tr>
+      <tr><td><code>proxy.ts</code> (raíz de <code>src</code>)</td><td>Se ejecuta antes de cada petición (antes «middleware»).</td><td>Chequeo optimista de la cookie</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="patron-pagina-cliente">El patrón «page.tsx + XxxCliente.tsx»</h2>
+  <p>Casi cada pantalla tiene dos archivos. Entender esta separación es entender React Server Components:</p>
+  <pre data-archivo="app/(dashboard)/certificacion/page.tsx (esquema)"><span class="c">// Server Component: corre SOLO en el servidor. Puede leer cookies y la BD.</span>
+<span class="k">export default async function</span> <span class="n">Page</span>() {
+  <span class="k">const</span> sesion = <span class="k">await</span> obtenerSesion();          <span class="c">// revalida en PostgreSQL</span>
+  <span class="k">if</span> (!sesion) sinSesion(<span class="s">'/certificacion'</span>);       <span class="c">// limpia la cookie y va al login</span>
+  <span class="k">return</span> &lt;CertificacionCliente rol={sesion.rol} centroId={sesion.centroId} /&gt;;
+}
+
+<span class="c">// CertificacionCliente.tsx empieza con 'use client': corre en el navegador,</span>
+<span class="c">// tiene useState/useEffect y llama a fetch('/api/certificacion').</span></pre>
+  <ul>
+    <li>El <b>servidor</b> decide quién puede ver la pantalla y le pasa solo las props necesarias.</li>
+    <li>El <b>cliente</b> maneja interactividad (formularios, modales, gráficas) y habla con la API por <code>fetch</code> relativo con la cookie HttpOnly (el JavaScript nunca toca el token).</li>
+  </ul>
+
+  <h2 id="proxy">proxy.ts: el portero optimista</h2>
+  <p><code>src/proxy.ts</code> se ejecuta en cada petición y hace solo lo barato: verifica la <b>firma HMAC y la vigencia</b> de la cookie <i>sin ir a la base de datos</i>.
+  Deja pasar rutas públicas (<code>/login</code>, <code>/recuperar</code>, <code>/api/auth/*</code>, <code>/api/sso/*</code>, <code>/api/servicio/*</code>), responde <code>401</code> JSON a APIs sin sesión y redirige pantallas al login con <code>?siguiente=</code>.
+  También manda a los teléfonos a la versión móvil (<code>/m/...</code>) salvo que el usuario haya elegido escritorio.</p>
+  <div class="alerta"><b>Defensa en profundidad</b>El proxy <b>no</b> es el control de acceso. La autorización real (usuario activo, rol, centro, MFA) la hace <code>obtenerSesion()</code> en cada layout, página y Route Handler. Ocultar un botón tampoco es seguridad: el servidor revalida siempre.</div>
+
+  <h2 id="movil">Versión móvil y captura en vivo</h2>
+  <p>Las rutas <code>/m/*</code> son una interfaz separada para el celular del administrador del centro: <code>ShellMovil</code> con navegación inferior y botones grandes.
+  <code>components/movil/CapturaEvidencia.tsx</code> usa dos APIs del navegador:</p>
+  <ul>
+    <li><b><code>getUserMedia</code></b> para abrir la cámara dentro de la página (no se puede elegir una foto vieja de la galería).</li>
+    <li><b>Geolocation API</b> con alta precisión; el servidor exige precisión ≤ 100 m y que el punto esté dentro del radio del centro.</li>
+  </ul>
+  <p>Antes de enviar, <code>captura.ts</code> comprime el JPEG en el navegador o une varias páginas fotografiadas en un PDF. ¿Por qué no usar el GPS del EXIF? Porque los navegadores móviles lo borran y es falsificable; la migración <code>003_captura_en_vivo.sql</code> documenta ese cambio de diseño.</p>
+
+  <h2 id="estilos">Estilos: Tailwind CSS 4 y la identidad</h2>
+  <p>Tailwind genera solo las clases usadas (CSS pequeño). En la v4 la configuración vive en CSS: <code>globals.css</code> define la paleta <code>oro</code> con <code>@theme</code>, una sola fuente de verdad del color. El dorado de botones (<code>#8C6914</code>) se eligió por su contraste 5:1 sobre blanco (accesibilidad WCAG AA). Los estados siempre llevan ícono + texto, nunca solo color (<code>lib/certificacion/presentacion.ts</code>).</p>
+
+  <h2 id="ux-baja-escolaridad">Diseño para personas con poca experiencia digital (Gestión)</h2>
+  <ul>
+    <li>Acceso con <b>PIN de 4 dígitos</b> en teclado grande (<code>AccesoPin.tsx</code>) y usuario recordado en el equipo de la tiendita.</li>
+    <li>Pantallas por pasos con fotos e iniciales de colores (<code>components/tiendita/comunes.tsx</code>).</li>
+    <li><b>Voz</b> que guía el ensayo de las juntas: Web Speech API con voces latinoamericanas o Google TTS (<code>components/unidad/voz.ts</code>).</li>
+    <li>Firma con el dedo en tableta (<code>FirmaPad.tsx</code>, canvas + pointer events).</li>
+    <li>Puertas de acceso con colores distintos para que nadie se equivoque (<code>TarjetaAcceso.tsx</code>: personal negro/dorado, familias marfil/plata).</li>
+  </ul>
+
+  <h2 id="mapas">Mapas sin costo</h2>
+  <p><code>FormUbicacion.tsx</code> usa <b>Leaflet</b> con teselas de OpenStreetMap: el domicilio se geocodifica, el pin se arrastra al inmueble y un círculo muestra el radio de 100 m en el que se aceptarán evidencias. El servidor vuelve a geocodificar el domicilio y solo acepta el pin si está cerca de ese punto (no confía en el cliente).</p>
+
+  <h2 id="pdfs">Documentos imprimibles</h2>
+  <p>Actas, recibos y estados de cuenta son páginas HTML con estilos de impresión (el usuario «guarda como PDF»). Los PDF que deben archivarse o enviarse (documentos firmados, recibos por correo, SISVEA, carteles) se generan en el servidor con <b>pdf-lib</b>. El SISVEA se escribe <i>encima</i> del formato oficial en blanco (<code>public/formatos/sisvea-ctng-2024.pdf</code>) con coordenadas, respetando su diseño.</p>
+
+  <div class="experto"><b>Nivel experto: por qué Server Components importan en datos sensibles</b>
+  En una SPA clásica, la API devuelve JSON completo y el cliente decide qué mostrar: es fácil filtrar datos de más. Con Server Components el servidor arma la vista y manda
+  solo lo que se renderiza. Combinado con cookies HttpOnly + SameSite=Strict, desaparecen clases enteras de vulnerabilidades (robo de token por XSS, CSRF básico).</div>
+</section>
+
+<!-- ======================================================================= 5 -->
+<section class="leccion" id="backend" data-titulo="Backend y APIs" data-grupo="Aplicación">
+  <span class="etiqueta">Lección 5 · Backend</span>
+  <h1>Route Handlers, capas y el catálogo de APIs</h1>
+  <p class="entrada">El backend vive dentro de la misma app Next.js: <code>src/app/api/**/route.ts</code> son los controladores y <code>src/lib/**</code> es la lógica de negocio y el acceso a datos.</p>
+
+  <h2 id="capas">Arquitectura en capas dentro del monolito</h2>
+  <figure class="diagrama"><pre class="mermaid">
+flowchart LR
+  R["route.ts<br/>controlador HTTP"] --> G["Guardia<br/>requerirSesion / guardiaModulo"]
+  G --> V["Validación<br/>lib/validacion.ts"]
+  V --> L["Lógica de dominio<br/>lib/certificacion, lib/pagos..."]
+  L --> M["Motores puros<br/>motor.ts sin BD"]
+  L --> D["Datos<br/>lib/db.ts query / withTransaction"]
+  L --> AU["Bitácora<br/>registrarAuditoria"]
+  D --> PG[("PostgreSQL")]
+  </pre><figcaption>Un Route Handler típico: autentica, valida, ejecuta dominio, persiste en transacción con bitácora y responde JSON uniforme <code>{ success, message, data }</code>.</figcaption></figure>
+
+  <h2 id="anatomia">Anatomía de un endpoint</h2>
+  <pre data-archivo="Patrón real (simplificado) de app/api/cedula/evidencias/route.ts"><span class="k">export async function</span> <span class="n">POST</span>(request: NextRequest) {
+  <span class="k">const</span> sesion = <span class="k">await</span> requerirSesion([<span class="s">"ADMIN_CENTRO"</span>]);     <span class="c">// 401 / 403 listos</span>
+  <span class="k">if</span> (sesion <span class="k">instanceof</span> NextResponse) <span class="k">return</span> sesion;
+  <span class="k">try</span> {
+    <span class="c">// 1. validar entrada (lanza ErrorValidacion con su código HTTP)</span>
+    <span class="c">// 2. el centro SIEMPRE sale de la sesión, nunca del formulario (multi-tenant)</span>
+    <span class="k">const</span> centro = <span class="k">await</span> resolverCentroConsulta(sesion, <span class="k">null</span>);
+    <span class="c">// 3. persistir de forma atómica junto con la bitácora</span>
+    <span class="k">await</span> withTransaction(<span class="k">async</span> (client) =&gt; {
+      <span class="k">await</span> client.query(<span class="s">`INSERT INTO evidencias (...) VALUES ($1, $2, ...)`</span>, [...]);
+      <span class="k">await</span> registrarAuditoria({ accion: <span class="s">"EVIDENCIA_CARGADA"</span>, ... }, client);
+    });
+    <span class="k">return</span> NextResponse.json({ success: <span class="k">true</span>, data }, { status: <span class="n">201</span> });
+  } <span class="k">catch</span> (error) {
+    <span class="k">return</span> respuestaError(error, <span class="s">"carga de evidencia"</span>);    <span class="c">// oculta errores internos</span>
+  }
+}</pre>
+
+  <h2 id="principios">Principios que se repiten</h2>
+  <div class="rejilla">
+    <div class="tarjeta"><h4>Multi-tenant por sesión</h4><p>El <code>centro_id</code> sale de la sesión. Un recurso de otro centro responde <b>404</b> (no 403), para no revelar que existe.</p></div>
+    <div class="tarjeta"><h4>SQL parametrizado</h4><p>Siempre <code>$1, $2</code>: la inyección SQL queda descartada por construcción.</p></div>
+    <div class="tarjeta"><h4>Transacción + bitácora</h4><p><code>withTransaction</code> usa una sola conexión del pool; la bitácora entra en la misma transacción.</p></div>
+    <div class="tarjeta"><h4>Motores puros</h4><p><code>lib/certificacion/motor.ts</code> y <code>lib/precertificacion/motor.ts</code> no tocan la BD: se prueban fácil y se pueden reemplazar por el motor oficial.</p></div>
+    <div class="tarjeta"><h4>Inmutabilidad</h4><p>Recibos, firmas, kárdex y actas no se borran: se cancelan con motivo o se congelan con huella SHA-256.</p></div>
+    <div class="tarjeta"><h4>Idempotencia</h4><p>Avisos registrados en tablas para no repetirse; índices UNIQUE como garantía final (p. ej. <code>captura_id</code>).</p></div>
+  </div>
+
+  <h2 id="motor">El motor de certificación (lógica de dominio pura)</h2>
+  <p>Recibe secciones, criterios, conteo de evidencias aprobadas/pendientes y la condición física, y devuelve una <code>Evaluacion</code>. Reglas: cada área aporta un porcentaje ponderado; la condición física es el promedio de 4 aspectos (0–3); <b>un obligatorio incumplido deja el resultado «SIN_PUNTAJE»</b>; se certifica con <b>≥ 80 %</b>. Dos escenarios: <code>REAL</code> (solo aprobadas) y <code>POTENCIAL</code> (supone aprobadas las pendientes). Define una interfaz <code>MotorCertificacion</code>: es el patrón <b>Strategy</b> para cambiar la implementación sin tocar API ni UI.</p>
+
+  <h2 id="entre-servicios">APIs entre servicios</h2>
+  <p>Las rutas <code>/api/servicio/*</code> no usan cookies: exigen <code>Authorization: Bearer SERVICIO_TOKEN</code> (≥ 32 caracteres, comparado en tiempo constante). Solo se usan dentro del clúster:</p>
+  <div class="tabla"><table>
+    <thead><tr><th>Quién llama</th><th>Endpoint</th><th>Para qué</th></tr></thead>
+    <tbody>
+      <tr><td>Gestión → Cert.</td><td><code>GET /api/servicio/acceso/:id</code></td><td>Reconfirmar cada minuto que la cuenta sigue activa y qué centros administra.</td></tr>
+      <tr><td>Gestión → Cert.</td><td><code>GET /api/servicio/centros</code></td><td>Registro de centros (Gestión no tiene centros propios).</td></tr>
+      <tr><td>Gestión → Cert.</td><td><code>/api/servicio/centros/:id/personal</code>, <code>/api/servicio/personal/:id</code></td><td>Administrar cuentas de administradores desde la consola de Gestión (viven en la certificación).</td></tr>
+      <tr><td>Gestión → Cert.</td><td><code>POST /api/servicio/telegram</code></td><td>El webhook del bot vive en Gestión y reenvía las conexiones del personal.</td></tr>
+      <tr><td>Cert. → Gestión</td><td><code>GET /api/servicio/reporte-cedula</code></td><td>Indicadores sin datos personales (conteos, porcentajes, folios) como evidencia de la cédula.</td></tr>
+      <tr><td>CronJob → Cert.</td><td><code>POST /api/servicio/avisos-diarios</code></td><td>Vencimientos, rechazos, plan de mejora, vigencia del acta.</td></tr>
+      <tr><td>CronJob → Gestión</td><td><code>POST /api/tareas/diarias</code></td><td>Cuotas, recordatorios de pago, visitas, farmacia, artículos.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="webhooks">Webhooks entrantes (Gestión)</h2>
+  <ul>
+    <li><code>/api/pagos/webhook?centro=</code> (Mercado Pago): <b>no confía en el aviso</b>; consulta el pago directamente a Mercado Pago y solo cuenta un pago aprobado por el monto completo en MXN. Firma <code>x-signature</code> opcional.</li>
+    <li><code>/api/telegram/webhook</code>: token secreto comparado en tiempo constante.</li>
+    <li><code>/api/whatsapp/webhook</code>: firma <code>X-Hub-Signature-256</code> con el App Secret de Meta.</li>
+  </ul>
+
+  <h2 id="catalogo-apis">Catálogo completo de endpoints</h2>
+  <p>Generado de los archivos <code>route.ts</code> de ambos repositorios con su descripción.</p>
+  <div class="explorador-filtros">
+    <input type="search" id="apis-texto" placeholder="Filtrar por ruta o descripción (p. ej. pagos, sso, farmacia)">
+    <select id="apis-repo"><option value="">Ambas aplicaciones</option><option value="certificacion">Certificación</option><option value="gestion">Gestión</option></select>
+    <span class="contador" id="apis-contador"></span>
+  </div>
+  <div class="tabla" id="tabla-apis"></div>
+
+  <div class="experto"><b>Nivel experto: ¿REST «puro»?</b>
+  Las APIs son <b>orientadas a casos de uso</b> más que REST académico: <code>PATCH /api/encargados/:id</code> recibe <code>{ accion: "baja" | "reactivar" | "restablecer_pin" }</code>.
+  Es una decisión pragmática: cada acción tiene reglas, auditoría y efectos distintos (cerrar sesiones). Como solo las consume su propia interfaz, no se necesita versionado (<code>/v1</code>) ni OpenAPI.
+  Si un tercero fuera a consumirlas, lo correcto sería publicar un contrato OpenAPI y versionar.</div>
+</section>
+
+<!-- ======================================================================= 6 -->
+<section class="leccion" id="seguridad" data-titulo="Seguridad e identidad" data-grupo="Aplicación">
+  <span class="etiqueta">Lección 6 · Seguridad</span>
+  <h1>Identidad, sesiones, MFA e inicio de sesión único</h1>
+  <p class="entrada">La seguridad es el atributo de calidad número uno del sistema. Todo sale de un solo módulo de criptografía (<code>lib/auth/crypto.ts</code>) construido sobre <code>node:crypto</code>.</p>
+
+  <h2 id="primitivas">Las primitivas criptográficas y para qué sirve cada una</h2>
+  <div class="tabla"><table>
+    <thead><tr><th>Primitiva</th><th>Uso en MIA Clara</th><th>Por qué esa</th></tr></thead>
+    <tbody>
+      <tr><td><b>scrypt</b> (N=16384, r=8, p=1, sal de 16 bytes)</td><td>Contraseñas y PIN</td><td>Función lenta y costosa en memoria: hace caro un ataque con GPU.</td></tr>
+      <tr><td><b>HKDF-SHA256</b></td><td>Derivar una clave distinta por propósito desde <code>AUTH_SECRET</code></td><td>Un token de captura nunca valida como sesión: claves separadas por diseño.</td></tr>
+      <tr><td><b>HMAC-SHA256</b></td><td>Firmar cookies de sesión, preauth y tokens de captura</td><td>Integridad sin guardar estado en el servidor; comparación con <code>timingSafeEqual</code>.</td></tr>
+      <tr><td><b>AES-256-GCM</b></td><td>Cifrar en reposo secretos TOTP y credenciales de Mercado Pago</td><td>Cifrado autenticado: detecta manipulación.</td></tr>
+      <tr><td><b>TOTP (RFC 6238)</b></td><td>MFA obligatorio</td><td>Compatible con cualquier app autenticadora; sin SMS (inseguro y con costo).</td></tr>
+      <tr><td><b>Ed25519</b></td><td>Firmar el pase de inicio de sesión único hacia Gestión</td><td>Asimétrica: Gestión solo tiene la clave pública y no puede fabricar pases.</td></tr>
+      <tr><td><b>SHA-256</b></td><td>Huella de actas, documentos firmados, evidencias y tokens de recuperación</td><td>Detecta alteraciones y duplicados; los tokens se guardan solo como hash.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="login">El inicio de sesión con MFA</h2>
+  <figure class="diagrama"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Usuario
+  participant L as /login
+  participant A as API auth
+  participant DB as PostgreSQL
+  U->>L: correo y contraseña
+  L->>A: POST /api/auth/login
+  A->>DB: busca usuario (o usa hash ficticio si no existe)
+  A->>A: scrypt + timingSafeEqual, revisa bloqueo
+  A-->>L: cookie preauth (10 min) y siguiente paso
+  alt contraseña temporal
+    U->>A: POST /api/auth/cambiar-password
+  end
+  alt sin autenticador
+    U->>A: POST /api/auth/mfa/configurar
+    A-->>U: QR otpauth:// (secreto cifrado AES-GCM en BD)
+  end
+  U->>A: POST /api/auth/mfa/verificar con código de 6 dígitos
+  A->>DB: valida TOTP y que el contador no se haya usado
+  A-->>U: cookie de sesión HMAC (8 h), HttpOnly, Secure, SameSite=Strict
+  </pre><figcaption>Sin MFA completado no existe sesión. La cookie preauth solo sirve para terminar el login.</figcaption></figure>
+  <ul>
+    <li><b>Anti-enumeración:</b> si el correo no existe se compara contra un hash ficticio, así la respuesta tarda lo mismo.</li>
+    <li><b>Fuerza bruta:</b> 5 intentos fallidos bloquean 15 minutos (en SQL, atómico).</li>
+    <li><b>Anti-reutilización TOTP:</b> se guarda el último contador usado (<code>totp_ultimo_contador</code>).</li>
+  </ul>
+
+  <h2 id="revocacion">Revocación inmediata: sesion_version</h2>
+  <p>Las cookies firmadas son «sin estado», y eso tiene un problema clásico: no se pueden revocar. MIA Clara lo resuelve así: la cookie lleva <code>ver</code> (versión de sesión del usuario) y <code>obtenerSesion()</code> la compara en <b>cada petición</b> con la columna <code>usuarios.sesion_version</code>. Restablecer contraseña o MFA incrementa la versión y todas las sesiones abiertas mueren al instante. También revisa que el usuario y su centro sigan <code>ACTIVO</code>.</p>
+  <p><code>obtenerSesion</code> está envuelta en <code>cache()</code> de React: dentro de una misma petición la consulta se hace una sola vez aunque la pidan el layout, la página y varios componentes.</p>
+
+  <h2 id="sso">Inicio de sesión único hacia Gestión (Ed25519)</h2>
+  <figure class="diagrama"><pre class="mermaid">
+sequenceDiagram
+  autonumber
+  actor U as Navegador
+  participant G as Gestión
+  participant C as Certificación
+  U->>G: Entrar con mi cuenta de MIA Clara
+  G->>G: genera estado aleatorio y lo guarda en cookie
+  G-->>U: 302 a C /api/sso/administracion?regreso=...&estado=...
+  U->>C: con su sesión (o pasa por login + MFA)
+  C->>C: regreso == URL_ADMINISTRACION/sso/callback ?
+  C->>C: firma pase Ed25519 con iss, aud, jti, exp 60 s, centros, ver
+  C-->>U: formulario auto-enviado POST a G /sso/callback
+  U->>G: POST pase + estado
+  G->>G: verifica firma con la clave PÚBLICA, aud, exp, estado de la cookie
+  G->>G: INSERT jti en sso_pases_usados (un solo uso)
+  G-->>U: sesión local de Gestión
+  loop cada minuto
+    G->>C: GET /api/servicio/acceso/:id (SERVICIO_TOKEN, red interna)
+  end
+  </pre><figcaption>Si la certificación desactiva la cuenta o el centro, Gestión corta el acceso en menos de un minuto. Si la certificación no responde, tolera 5 minutos con lo último confirmado y luego niega (falla cerrado).</figcaption></figure>
+  <div class="tabla"><table>
+    <thead><tr><th>Amenaza</th><th>Defensa</th></tr></thead>
+    <tbody>
+      <tr><td>Robar un pase y reusarlo</td><td>Vence en 60 s y su <code>jti</code> se registra como usado.</td></tr>
+      <tr><td>Mandar el pase a un sitio falso (open redirect)</td><td>La certificación solo entrega a <code>URL_ADMINISTRACION/sso/callback</code>, fija por configuración.</td></tr>
+      <tr><td>Login CSRF (inyectarle a la víctima la sesión del atacante)</td><td>El valor <code>estado</code> liga el pase al navegador que lo pidió.</td></tr>
+      <tr><td>Gestión comprometida fabrica pases</td><td>Imposible: solo tiene la clave pública.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Es, en esencia, una versión mínima de OpenID Connect con flujo implícito vía POST. Las llaves se generan una vez con <code>openssl genpkey -algorithm ed25519</code> en el despliegue de la certificación y se dejan en <code>~/.integracentro/enlace-admin/</code> para que el despliegue de Gestión tome solo la pública.</p>
+
+  <h2 id="recuperacion">Recuperación de contraseña</h2>
+  <p>Token aleatorio de 256 bits enviado por correo; en la BD solo su SHA-256. Vence en 30 minutos, pedir otro invalida el anterior, máximo 3 por usuario y 10 por IP cada hora, y la respuesta es idéntica exista o no el correo. El enlace se arma con <code>URL_PUBLICA</code> y nunca con el encabezado <code>Host</code> (evita <i>host header poisoning</i>). Recuperar la contraseña no se salta el MFA.</p>
+
+  <h2 id="rbac">Autorización: RBAC + tenant</h2>
+  <p><code>lib/auth/permisos.ts</code> son funciones puras sin dependencias: <code>puedeVerCentro</code>, <code>rolesAsignables</code>, <code>puedeGestionarUsuario</code>... Las usa el servidor para decidir y la interfaz para mostrar u ocultar. Un ADMIN_CENTRO solo puede crear LECTORES de su centro; un SUPERADMIN no puede desactivarse a sí mismo (evita auto-bloqueo). En Gestión, los permisos se combinan con <b>módulos contratados</b> por centro (<code>guardiaModulo</code>).</p>
+
+  <h2 id="otras-defensas">Otras defensas que vale la pena estudiar</h2>
+  <ul>
+    <li><b>Validación del tipo real</b> de archivo por sus bytes («números mágicos»), no por la extensión ni el MIME del cliente.</li>
+    <li><b>Rutas de archivo</b> construidas por el servidor (<code>&lt;centro&gt;/&lt;uuid&gt;.&lt;ext&gt;</code>): sin path traversal y sin sobrescribir.</li>
+    <li><b>Inyección CSV</b>: <code>lib/csv.ts</code> neutraliza celdas que Excel interpretaría como fórmulas.</li>
+    <li><b>Mínima exposición</b> en Telegram y correos: sin nombres, domicilios ni datos de salud.</li>
+    <li><b>Inmutabilidad en la BD</b>: triggers impiden modificar historial clínico firmado y movimientos de farmacia.</li>
+    <li><b>Secretos fuera del repo</b>: se generan en el despliegue y viven en Secrets de Kubernetes; Ansible usa <code>no_log: true</code> para no imprimirlos.</li>
+    <li><b>CD sin PR ni forks</b>: un PR ajeno nunca ejecuta código en el runner con acceso al clúster.</li>
+  </ul>
+
+  <div class="experto"><b>Nivel experto: modelo de amenazas (STRIDE) en una tabla</b>
+  <b>S</b>poofing → MFA, scrypt, SSO firmado. <b>T</b>ampering → HMAC, AES-GCM, SHA-256 en actas, triggers. <b>R</b>epudiation → bitácora de auditoría en la misma transacción.
+  <b>I</b>nformation disclosure → 404 entre tenants, Server Components, mínimos datos en avisos. <b>D</b>enial of service → Cloudflare, bloqueos por intentos, límites de tamaño.
+  <b>E</b>levation of privilege → RBAC puro revalidado en servidor, roles asignables acotados. Practica hacer esta tabla para cada sistema que diseñes.</div>
+</section>
+
+<!-- ======================================================================= 7 -->
+<section class="leccion" id="datos" data-titulo="Datos: PostgreSQL y almacenamiento" data-grupo="Aplicación">
+  <span class="etiqueta">Lección 7 · Datos</span>
+  <h1>El modelo de datos, las migraciones y los archivos</h1>
+  <p class="entrada">Cada aplicación tiene su propia base PostgreSQL y su propio volumen de archivos. Las bases nunca se consultan entre sí: lo que una necesita de la otra lo pide por API.</p>
+
+  <h2 id="modelo-cert">Modelo de la certificación (simplificado)</h2>
+  <figure class="diagrama"><pre class="mermaid">
+erDiagram
+  centros ||--o{ usuarios : "tiene"
+  centros ||--o{ evidencias : "captura"
+  cedula_secciones ||--o{ cedula_criterios : "agrupa"
+  cedula_criterios ||--o{ cedula_subcriterios : "verifica con"
+  cedula_subcriterios ||--o{ evidencias : "recibe"
+  centros ||--o{ evaluacion_condicion_fisica : "se evalúa"
+  centros ||--o{ actas_certificacion : "obtiene"
+  centros ||--o{ precert_respuestas : "responde"
+  centros ||--o{ plan_mejora : "planea"
+  usuarios ||--o{ bitacora_auditoria : "actúa"
+  usuarios ||--o{ recuperaciones_password : "solicita"
+  </pre><figcaption>La cédula (secciones, criterios, subcriterios) es un catálogo que se carga con la migración 002; las evidencias y dictámenes son los datos transaccionales.</figcaption></figure>
+
+  <h2 id="migraciones">Migraciones idempotentes: la estrategia</h2>
+  <p>No hay herramienta de migraciones (Flyway, Liquibase, Prisma Migrate). Se usa una regla simple y poderosa: <b>cada archivo <code>db/NNN_nombre.sql</code> debe poder ejecutarse cualquier número de veces</b> (<code>CREATE TABLE IF NOT EXISTS</code>, <code>ADD COLUMN IF NOT EXISTS</code>, <code>CREATE OR REPLACE FUNCTION</code>, <code>INSERT ... ON CONFLICT</code>). El despliegue aplica <i>todas</i> en orden alfabético en cada versión.</p>
+  <ul>
+    <li>Ventaja: sin tabla de control de versiones, sin estado que se desincronice; el esquema siempre converge.</li>
+    <li>Regla de oro: <b>nunca editar una migración ya aplicada</b>; un cambio es un archivo nuevo.</li>
+    <li>Prueba automática: <code>pruebas/bd/migrar.sh</code> aplica todas dos veces en CI; si la segunda falla, no es idempotente y no se despliega.</li>
+    <li>Límite: migraciones destructivas o de datos grandes (renombrar columnas, backfills) requieren cuidado extra porque se reejecutan.</li>
+  </ul>
+
+  <details><summary>Migraciones de la certificación (17 archivos)</summary>
+  <div class="tabla"><table><thead><tr><th>Archivo</th><th>Qué introduce</th></tr></thead><tbody>
+    <tr><td><code>001_iam</code></td><td>centros, usuarios (MFA, bloqueo, sesion_version), bitacora_auditoria</td></tr>
+    <tr><td><code>002_cedula</code></td><td>Catálogo VF1 (secciones, criterios, subcriterios, áreas físicas) y evidencias</td></tr>
+    <tr><td><code>003_captura_en_vivo</code></td><td>Captura en vivo con ubicación del dispositivo (abandona el GPS del EXIF)</td></tr>
+    <tr><td><code>004_certificacion</code></td><td>Ubicación geocodificada, condición física y actas</td></tr>
+    <tr><td><code>007_recuperacion_password</code></td><td>Tokens de recuperación y límite por IP</td></tr>
+    <tr><td><code>008_capacitacion_y_admin_externa</code></td><td>Centros de capacitación y superadmins que administran centros</td></tr>
+    <tr><td><code>009_codigos_postales</code></td><td>Catálogo SEPOMEX</td></tr>
+    <tr><td><code>010_precertificacion</code></td><td>96 preguntas en 15 áreas</td></tr>
+    <tr><td><code>011_telegram</code></td><td>Enlaces y bitácora de mensajes</td></tr>
+    <tr><td><code>012</code> a <code>019</code></td><td>Vigencia de documentos, administración adicional, <code>borrar_centro()</code>, avisos de rechazo, plan de mejora, carteles y vigencia del acta (con trigger)</td></tr>
+  </tbody></table></div>
+  <p>Faltan los números 005 y 006: se retiraron cuando los módulos de cobros se mudaron a Gestión. El hueco en la numeración es historia del diseño.</p></details>
+
+  <details><summary>Migraciones de Gestión (31 archivos)</summary>
+  <div class="tabla"><table><thead><tr><th>Rango</th><th>Dominio</th></tr></thead><tbody>
+    <tr><td><code>001</code>–<code>002</code></td><td>Base (centros espejo, cuentas, <code>sso_pases_usados</code>), módulos por centro, internos, familiares, plantillas y firmas</td></tr>
+    <tr><td><code>003</code>–<code>005</code></td><td>Pagos (Mercado Pago, cargos), tiendita y monederos, recibos con folio</td></tr>
+    <tr><td><code>006</code>–<code>009</code></td><td>Consejería (padrinos), visitas, farmacia (trigger de inmutabilidad), expediente clínico (triggers)</td></tr>
+    <tr><td><code>010</code>–<code>015</code></td><td>Ficha y cobro semanal, plantillas legales, SISVEA, códigos postales, artículos, Telegram</td></tr>
+    <tr><td><code>016</code>–<code>024</code></td><td>Unidad y Servicio: servidores, aniversario, juntas, WhatsApp, voz de Google</td></tr>
+    <tr><td><code>025</code>–<code>031</code></td><td>Grupos de centros (trigger de sincronización), borrado de centros y servidores, varios responsables, duración de juntas</td></tr>
+  </tbody></table></div></details>
+
+  <h2 id="inmutabilidad">Inmutabilidad dentro de la base</h2>
+  <p>Para datos con valor legal no basta con «la app no ofrece el botón de editar». Gestión instala <b>triggers</b> que rechazan <code>UPDATE</code>/<code>DELETE</code> en historial clínico firmado (<code>clinico_firmado_inmutable</code>) y en movimientos de farmacia (<code>farmacia_sin_cambios</code>). Así ni un error del código ni un acceso directo a la BD por la aplicación puede reescribir la historia.</p>
+
+  <h2 id="borrado">Borrado definitivo con PL/pgSQL</h2>
+  <p><code>borrar_centro(c)</code> borra un centro dado de baja y todo lo que depende de él, resolviendo incluso ligas circulares (la migración 015/027 corrige ese caso). Se ejecuta en ambas bases: la certificación llama primero a Gestión por la red interna y luego borra lo suyo. Las pruebas con BD la usan para limpiar los datos que crean.</p>
+
+  <h2 id="archivos-pvc">Archivos: volumen persistente, no la BD</h2>
+  <p>Fotos, PDF y documentos firmados se guardan en un <b>PersistentVolumeClaim</b> montado en <code>/app/expedientes_storage</code> (<code>lib/evidencias/almacen.ts</code>); la BD guarda la ruta relativa, el tamaño, el MIME y la SHA-256. ¿Por qué no BLOBs en Postgres? La BD queda pequeña y rápida de respaldar, y los archivos se sirven por streaming. ¿Por qué no S3/Object Storage? Costo y simplicidad; es la primera mejora natural si se escala (ver <a href="#evolucion">Evolución</a>).</p>
+
+  <h2 id="multitenant">Multi-tenancy: «base compartida, esquema compartido»</h2>
+  <p>Todos los centros viven en las mismas tablas con una columna <code>centro_id</code>. Es el modelo más barato de operar. El aislamiento depende de que <b>cada consulta filtre por el centro de la sesión</b>, por eso la regla «el centro sale de la sesión, nunca del formulario» es sagrada.</p>
+  <div class="experto"><b>Nivel experto: Row-Level Security como segunda red</b>
+  PostgreSQL permite políticas RLS (<code>CREATE POLICY ... USING (centro_id = current_setting('app.centro')::uuid)</code>) que filtran automáticamente por tenant.
+  Agregarlas convertiría un olvido de <code>WHERE centro_id</code> en un resultado vacío en vez de una fuga. Es una mejora de defensa en profundidad típica en sistemas multi-tenant con datos de salud.</div>
+
+  <h2 id="respaldos">Respaldos: el hueco más importante</h2>
+  <div class="alerta"><b>Hoy no hay respaldos automatizados en los repositorios</b>
+  Las PVC usan <code>local-path</code> (disco del propio nodo) y tienen <code>prevent_destroy</code> en Terraform, lo que protege contra un borrado accidental <i>por Terraform</i>, pero no contra la pérdida del disco o del servidor.
+  Un experto agregaría: CronJob con <code>pg_dump</code> cifrado hacia Object Storage (Oracle da 20 GB gratis), copia de los PVC de archivos, retención (7 diarios, 4 semanales) y <b>pruebas periódicas de restauración</b>. Un respaldo que nunca se restauró no es un respaldo.</div>
+</section>
+
+<!-- ======================================================================= 8 -->
+<section class="leccion" id="docker" data-titulo="Imágenes Docker" data-grupo="Plataforma">
+  <span class="etiqueta">Lección 8 · Contenedores</span>
+  <h1>La imagen Docker, línea por línea</h1>
+  <p class="entrada">Ambas aplicaciones usan el mismo <code>Dockerfile</code> multi-etapa. Es corto, pero cada línea tiene una razón.</p>
+
+  <pre data-archivo="integracentro-ui/Dockerfile (igual en web/Dockerfile)"><span class="c"># ---------- Etapa 1: construir ----------</span>
+<span class="k">FROM</span> node:20-alpine <span class="k">AS</span> builder         <span class="c"># Alpine: imagen base pequeña (musl)</span>
+<span class="k">WORKDIR</span> /app
+<span class="k">COPY</span> . .                              <span class="c"># todo el contexto (filtrado por .dockerignore)</span>
+<span class="k">RUN</span> apk add --no-cache libc6-compat   <span class="c"># compatibilidad glibc para binarios nativos</span>
+<span class="k">RUN</span> npm ci                            <span class="c"># instala EXACTO lo de package-lock.json</span>
+<span class="k">ENV</span> NEXT_TELEMETRY_DISABLED=1
+<span class="k">RUN</span> npm run build                     <span class="c"># next build con output: "standalone"</span>
+
+<span class="c"># ---------- Etapa 2: ejecutar ----------</span>
+<span class="k">FROM</span> node:20-alpine <span class="k">AS</span> runner          <span class="c"># empieza limpia: sin código fuente ni devDependencies</span>
+<span class="k">WORKDIR</span> /app
+<span class="k">ENV</span> NODE_ENV=production PORT=3000 HOSTNAME="0.0.0.0"   <span class="c"># escuchar en todas las interfaces del pod</span>
+<span class="k">RUN</span> addgroup --system --gid 1001 nodejs &amp;&amp; adduser --system --uid 1001 nextjs
+<span class="k">COPY</span> --from=builder /app/public ./public
+<span class="k">COPY</span> --from=builder --chown=nextjs:nodejs /app/.next/standalone ./   <span class="c"># server.js + node_modules mínimos</span>
+<span class="k">COPY</span> --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+<span class="k">USER</span> nextjs                           <span class="c"># nunca root</span>
+<span class="k">EXPOSE</span> 3000
+<span class="k">CMD</span> ["node", "server.js"]</pre>
+
+  <h2 id="multietapa">¿Por qué multi-etapa y standalone?</h2>
+  <ul>
+    <li><b>Multi-etapa:</b> el compilador, el código TypeScript y las devDependencies se quedan en la etapa <code>builder</code>. La imagen final solo lleva lo que corre: menos tamaño, menos superficie de ataque, menos CVE.</li>
+    <li><b><code>output: "standalone"</code></b> (en <code>next.config.ts</code>): Next.js rastrea qué archivos de <code>node_modules</code> se usan de verdad y genera un <code>server.js</code> autocontenido. Pasa de cientos de MB a decenas.</li>
+    <li><b>Usuario sin privilegios (uid 1001):</b> si alguien explota la app, no es root dentro del contenedor. Por eso el Deployment pone <code>fsGroup: 1001</code>: para que ese usuario pueda escribir en el PVC.</li>
+    <li><b><code>.dockerignore</code></b> excluye <code>node_modules</code>, <code>.next</code>, <code>.git</code>, <code>.env*</code> y pruebas: contexto pequeño y ningún secreto dentro de la imagen.</li>
+  </ul>
+
+  <h2 id="sin-registro">Sin registro de imágenes: cómo llega la imagen al clúster</h2>
+  <p>No hay Docker Hub, GHCR ni OCIR. La imagen se construye <b>en el mismo nodo</b> donde corre:</p>
+  <div class="tabla"><table><thead><tr><th>Ambiente</th><th>Comando (variable <code>construir_imagen</code>)</th><th>Por qué funciona</th></tr></thead><tbody>
+    <tr><td>Mac (Minikube)</td><td><code>minikube image build -t integracentro-ui:TAG .</code></td><td>Construye dentro del runtime de Minikube.</td></tr>
+    <tr><td>Oracle (k3s)</td><td><code>docker build -t integracentro-ui:TAG .</code></td><td>k3s se instaló con <code>--docker</code>: usa el mismo Docker, ve la imagen local.</td></tr>
+  </tbody></table></div>
+  <p>Por eso los Deployments usan <code>imagePullPolicy: Never</code>: Kubernetes no debe intentar descargarla. La etiqueta es el <b>commit</b> (12 caracteres), y en la Mac con cambios sin commit se agrega <code>-local-AAAAMMDDhhmmss</code>. Una etiqueta única por versión hace que cambiar la imagen en el Deployment dispare un rollout limpio y permita volver atrás.</p>
+  <div class="nota"><b>El candado entre repositorios</b>El CD de ambos repos usa <code>mkdir /tmp/integracentro-despliegue.lock</code> como mutex (mkdir es atómico). Sin él, dos builds simultáneos compiten por CPU y memoria del nodo y una imagen puede no quedar lista a tiempo (<code>ErrImageNeverPull</code>). Un candado de más de 30 minutos se considera abandonado.</div>
+
+  <h2 id="otras-imagenes">Las demás imágenes del sistema</h2>
+  <div class="tabla"><table><thead><tr><th>Imagen</th><th>Dónde</th><th>Observación</th></tr></thead><tbody>
+    <tr><td><code>postgres:15-alpine</code></td><td>Bases de ambas apps</td><td>El README dice 16 y CI prueba con <code>postgres:16</code>: inconsistencia de versión entre prueba y producción (ver Evolución).</td></tr>
+    <tr><td><code>cloudflare/cloudflared:2026.9.3</code></td><td>Conector del túnel</td><td>Versión fija: con <code>:latest</code> cambiaría sin control en cada reinicio.</td></tr>
+    <tr><td><code>curlimages/curl:8.10.1</code></td><td>CronJobs</td><td>Imagen diminuta que solo hace un POST con el token; corre como uid 100, no root.</td></tr>
+    <tr><td>ingress-nginx controller v1.15.1</td><td>Ingress</td><td>Manifiesto oficial «baremetal», versión fija en <code>preparar-servidor.yml</code>.</td></tr>
+  </tbody></table></div>
+
+  <div class="experto"><b>Nivel experto: mejoras al Dockerfile</b>
+  <ol>
+    <li><b>Caché de capas:</b> hoy <code>COPY . .</code> va antes de <code>npm ci</code>, así cualquier cambio de código reinstala todas las dependencias. Mejor: <code>COPY package.json package-lock.json ./</code> → <code>RUN npm ci</code> → <code>COPY . .</code>. Con BuildKit, <code>RUN --mount=type=cache,target=/root/.npm</code>.</li>
+    <li><b>Fijar la base por digest</b> (<code>node:20-alpine@sha256:...</code>) y actualizar con Renovate/Dependabot: builds reproducibles.</li>
+    <li><b>Escaneo y SBOM</b> en CI: <code>trivy image</code> o <code>grype</code>, y <code>syft</code> para el inventario.</li>
+    <li><b>Node 22 LTS</b>: Node 20 llegó a fin de soporte en abril de 2026.</li>
+    <li><b>Multi-arquitectura</b>: CI construye en x86 y producción es ARM64; con <code>docker buildx --platform linux/arm64</code> CI validaría la misma arquitectura.</li>
+  </ol></div>
+</section>
+
+<!-- ======================================================================= 9 -->
+<section class="leccion" id="kubernetes" data-titulo="El clúster de Kubernetes" data-grupo="Plataforma">
+  <span class="etiqueta">Lección 9 · Kubernetes</span>
+  <h1>El clúster k3s, objeto por objeto</h1>
+  <p class="entrada">Un solo nodo ARM en Oracle Cloud ejecuta el plano de control y las cargas de trabajo. Aquí está todo lo que vive en él y por qué cada objeto está configurado así.</p>
+
+  <h2 id="nodo">El nodo y la distribución k3s</h2>
+  <div class="tabla"><table><thead><tr><th>Aspecto</th><th>Valor</th><th>Razón</th></tr></thead><tbody>
+    <tr><td>Máquina</td><td>VM.Standard.A1.Flex, 2 OCPU ARM, 12 GB, 100 GB</td><td>La mitad de la capa gratuita; el resto queda para otros proyectos y reserva.</td></tr>
+    <tr><td>SO</td><td>Ubuntu 24.04 con actualizaciones de seguridad automáticas</td><td><code>unattended-upgrades</code> configurado por Ansible.</td></tr>
+    <tr><td>Instalación</td><td><code>k3s server --docker --disable traefik --write-kubeconfig-mode 600</code></td><td>Docker como runtime (imagen local sin registro), NGINX en vez de Traefik, kubeconfig solo legible por su dueño.</td></tr>
+    <tr><td>Red de pods / servicios</td><td><code>10.42.0.0/16</code> / <code>10.43.0.0/16</code> (por defecto de k3s)</td><td>El firewall de la imagen de Oracle bloquea todo salvo SSH; Ansible abre estas redes en iptables para que el nodo hable con sus pods.</td></tr>
+    <tr><td>CNI, DNS, almacenamiento</td><td>Flannel, CoreDNS, local-path-provisioner</td><td>Lo que trae k3s: suficiente para un nodo.</td></tr>
+    <tr><td>Contexto kubeconfig</td><td><code>oracle</code></td><td>Mismo nombre en Ansible y Terraform; los runners usan <code>KUBECONFIG</code> del usuario.</td></tr>
+  </tbody></table></div>
+
+  <h2 id="mapa-cluster">Mapa de objetos</h2>
+  <figure class="diagrama"><pre class="mermaid">
+flowchart LR
+  subgraph PR["namespace integracentro-prod"]
+    direction TB
+    D3["cloudflared<br/>2 réplicas"]
+    I1["Ingress<br/>integracentro-ui"]
+    S1["Service<br/>integracentro-ui :80"]
+    D1["Deployment<br/>integracentro-ui x2"]
+    S2["Service<br/>ic-ui-postgres :5432"]
+    D2["Deployment<br/>ic-ui-postgres"]
+    P1[("PVC postgres 5Gi")]
+    P2[("PVC expedientes 10Gi")]
+    C1["CronJob<br/>avisos-diarios"]
+    I1 --> S1
+    D3 --> S1 --> D1
+    D1 --> S2 --> D2 --> P1
+    D1 --> P2
+    C1 --> S1
+  end
+  subgraph AD["namespace integracentro-admin"]
+    direction TB
+    S4["Service<br/>integracentro-admin :80"]
+    D4["Deployment<br/>integracentro-admin x2"]
+    D5["Deployment<br/>ica-postgres"]
+    P3[("PVC postgres y<br/>expedientes")]
+    C2["CronJob<br/>tareas-diarias"]
+    S4 --> D4 --> D5 --> P3
+    C2 --> S4
+  end
+  D3 --> S4
+  </pre><figcaption>Un conector <code>cloudflared</code> (en el namespace de la certificación) atiende ambos dominios y entrega el tráfico al Service de cada aplicación por DNS interno.</figcaption></figure>
+
+  <div class="tabla"><table><thead><tr><th>Namespace</th><th>Qué más contiene</th></tr></thead><tbody>
+    <tr><td><code>kube-system</code></td><td>CoreDNS, local-path-provisioner, metrics-server y los Secrets <code>tfstate-default-…</code> con el estado de Terraform de cada repo.</td></tr>
+    <tr><td><code>ingress-nginx</code></td><td>El controlador de Ingress (manifiesto oficial «baremetal»).</td></tr>
+    <tr><td><code>integracentro-prod</code></td><td>Secrets <code>ic-ui-auth</code>, <code>ic-ui-db</code>, <code>ic-ui-tls</code>, <code>ic-ui-avisos</code>, <code>ic-ui-enlace-admin</code>, <code>ic-cloudflared</code> y opcionales <code>ic-ui-smtp</code>, <code>ic-ui-telegram</code>, <code>ic-ui-google-maps</code>; ConfigMap <code>ic-ui-marca</code> con el logotipo institucional de las actas.</td></tr>
+    <tr><td><code>integracentro-admin</code></td><td>Secrets <code>ica-auth</code>, <code>ica-db</code>, <code>ica-tareas</code>, <code>ica-tls</code>, <code>ica-enlace-certificacion</code> (solo la llave <b>pública</b>) y opcionales <code>ica-smtp</code>, <code>ica-telegram</code>, <code>ica-whatsapp</code>, <code>ica-google-tts</code>.</td></tr>
+  </tbody></table></div>
+
+  <h2 id="deployment-ui">El Deployment de la aplicación</h2>
+  <pre data-archivo="ansible/templates/ui-aplicacion.yaml.j2 (extracto comentado)"><span class="k">spec:</span>
+  <span class="k">replicas:</span> 2                         <span class="c"># rollout sin caída: una réplica atiende mientras la otra se cambia</span>
+  <span class="k">template:</span>
+    <span class="k">metadata:</span>
+      <span class="k">annotations:</span>                     <span class="c"># huella del SMTP/Telegram: si cambia, los pods se reinician</span>
+        mia-clara/config-opcional: <span class="s">"{{ ... | hash('sha256') }}"</span>
+    <span class="k">spec:</span>
+      <span class="k">securityContext:</span> { fsGroup: 1001 }  <span class="c"># el usuario nextjs puede escribir en el PVC</span>
+      <span class="k">containers:</span>
+        - image: integracentro-ui:<span class="s">{{ ui_imagen_tag }}</span>   <span class="c"># etiqueta = commit</span>
+          imagePullPolicy: Never
+          env:                            <span class="c"># secretos por referencia, nunca en el manifiesto</span>
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: ic-ui-db, key: DATABASE_URL } }
+          envFrom:
+            - secretRef: { name: ic-ui-smtp, optional: true }   <span class="c"># integraciones opcionales</span>
+          readinessProbe: { httpGet: { path: /login, port: 3000 } }  <span class="c"># ¿recibe tráfico?</span>
+          livenessProbe:  { httpGet: { path: /login, port: 3000 } }  <span class="c"># ¿reiniciar?</span>
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }   <span class="c"># lo que el scheduler reserva</span>
+            limits:   { memory: 768Mi }              <span class="c"># sin límite de CPU: evita throttling</span>
+          volumeMounts: [{ name: expedientes, mountPath: /app/expedientes_storage }]</pre>
+  <ul>
+    <li><b>Readiness vs liveness:</b> readiness saca el pod del Service si no responde (no recibe tráfico); liveness lo reinicia. Ambos usan <code>/login</code>, una página sin sesión.</li>
+    <li><b>Sin límite de CPU, con límite de memoria:</b> práctica común: la CPU es comprimible (se comparte) y un límite causaría throttling; la memoria no, y un pod descontrolado podría matar al nodo.</li>
+    <li><b>Patrón de la anotación-huella:</b> Kubernetes no reinicia pods cuando cambia un Secret referenciado. Poner su hash en una anotación del template fuerza un rollout cuando cambia.</li>
+  </ul>
+
+  <h2 id="postgres-k8s">PostgreSQL en Kubernetes: Deployment con Recreate</h2>
+  <p>La base corre en un <b>Deployment de 1 réplica</b> con <code>strategy: Recreate</code>: primero muere el pod viejo y luego nace el nuevo. Con la estrategia por defecto (RollingUpdate) habría dos pods queriendo montar el mismo volumen <code>ReadWriteOnce</code> y el nuevo nunca arrancaría.
+  <code>PGDATA</code> apunta a una subcarpeta porque <code>initdb</code> exige un directorio vacío y la raíz de algunos volúmenes trae <code>lost+found</code>.</p>
+  <p>Detalle fino de Ansible: <code>POSTGRES_PASSWORD</code> solo se aplica la primera vez que se inicializa el volumen. Por eso cada despliegue ejecuta <code>ALTER USER ... PASSWORD</code> dentro del pod para mantener la contraseña alineada con el Secret.</p>
+  <div class="experto"><b>Nivel experto: ¿Deployment o StatefulSet?</b>
+  Para una sola réplica con un PVC creado aparte (por Terraform), el Deployment con Recreate funciona. Un StatefulSet da identidad estable y <code>volumeClaimTemplates</code>, necesarios para réplicas.
+  En producción seria se usaría un operador (CloudNativePG, Zalando) que agrega réplicas en streaming, failover y respaldos a Object Storage, o una base administrada.</div>
+
+  <h2 id="volumenes">Volúmenes: RWO, RWX y local-path</h2>
+  <div class="tabla"><table><thead><tr><th>PVC</th><th>Minikube</th><th>k3s Oracle</th></tr></thead><tbody>
+    <tr><td><code>ic-ui-postgres-pvc</code> (5 Gi)</td><td>RWO, <code>standard</code></td><td>RWO, <code>local-path</code></td></tr>
+    <tr><td><code>ic-ui-expedientes-pvc</code> (10 Gi)</td><td><b>RWX</b> (lo montan 2 réplicas)</td><td><b>RWO</b>: basta porque las 2 réplicas están en el mismo nodo</td></tr>
+  </tbody></table></div>
+  <p><code>local-path</code> crea el volumen cuando el primer pod lo usa (<i>WaitForFirstConsumer</i>); por eso Terraform pone <code>wait_until_bound = false</code>, si no se quedaría esperando para siempre. Ojo: RWO restringe a un <i>nodo</i>, no a un pod; si algún día hay dos nodos, este PVC rompería las 2 réplicas.</p>
+
+  <h2 id="servicios-dns">Services y DNS interno</h2>
+  <p>Los Services son ClusterIP (solo dentro del clúster). Cada uno tiene nombre DNS <code>&lt;servicio&gt;.&lt;namespace&gt;.svc.cluster.local</code>. Así se ven las apps entre sí:</p>
+  <ul>
+    <li>Certificación → BD: <code>ic-ui-postgres:5432</code> (mismo namespace, nombre corto).</li>
+    <li>Certificación → Gestión: <code>http://integracentro-admin.integracentro-admin.svc.cluster.local</code>.</li>
+    <li>cloudflared → apps: <code>http://integracentro-ui.integracentro-prod.svc.cluster.local:80</code>.</li>
+  </ul>
+
+  <h2 id="ingress">Ingress NGINX</h2>
+  <p>En producción el tráfico real entra por el túnel directo al Service; el Ingress NGINX existe para las <b>pruebas de humo por HTTPS</b> (con un certificado autofirmado con SAN) y para el ambiente local (<code>https://integracentro.local</code>). La anotación <code>proxy-body-size: 30m</code> permite evidencias de 25 MB, y Next.js necesita <code>proxyClientMaxBodySize: 26mb</code> por la misma razón: un límite en cada salto.</p>
+
+  <h2 id="cronjobs">CronJobs</h2>
+  <pre data-archivo="ansible/templates/ui-avisos.yaml.j2 (extracto)"><span class="k">schedule:</span> <span class="s">"0 9 * * *"</span>
+<span class="k">timeZone:</span> America/Mexico_City      <span class="c"># sin esto, 9:00 UTC (3:00 en México)</span>
+<span class="k">concurrencyPolicy:</span> Forbid          <span class="c"># nunca dos a la vez</span>
+<span class="k">jobTemplate.spec.backoffLimit:</span> 2   <span class="c"># reintenta dos veces</span>
+  ... curl -fsS --max-time 300 -X POST -H "Authorization: Bearer $AVISOS_TOKEN" \
+      http://integracentro-ui.integracentro-prod.svc.cluster.local/api/servicio/avisos-diarios</pre>
+
+  <h2 id="secrets">Secrets: cómo nacen y viven</h2>
+  <ul>
+    <li><b>Se generan una sola vez</b> en el despliegue (Ansible revisa cuáles faltan). Regenerar <code>AUTH_SECRET</code> dejaría ilegibles los secretos TOTP y cerraría todas las sesiones.</li>
+    <li>Los opcionales (SMTP, Telegram, Google, WhatsApp) se leen de archivos <code>~/.integracentro/*.env</code> del servidor y se publican como Secret solo si existen.</li>
+    <li>Los Secrets de Kubernetes están en base64, <b>no cifrados</b>. En k3s se puede activar cifrado en reposo (<code>--secrets-encryption</code>); a escala, External Secrets o Sealed Secrets.</li>
+  </ul>
+
+  <h2 id="kubectl">Chuleta de kubectl para este clúster</h2>
+  <pre><span class="c"># ¿Qué hay corriendo?</span>
+kubectl --context oracle get all -n integracentro-prod
+kubectl --context oracle get pods -A -o wide
+<span class="c"># Logs en vivo de la app</span>
+kubectl --context oracle -n integracentro-prod logs deploy/integracentro-ui -f
+<span class="c"># Estado y eventos de un pod que no arranca</span>
+kubectl --context oracle -n integracentro-prod describe pod -l app=integracentro-ui
+<span class="c"># Entrar a la base</span>
+kubectl --context oracle -n integracentro-prod exec -it deploy/ic-ui-postgres -- psql -U integracentro -d integracentro
+<span class="c"># Historial y rollback del despliegue</span>
+kubectl --context oracle -n integracentro-prod rollout history deployment/integracentro-ui
+kubectl --context oracle -n integracentro-prod rollout undo deployment/integracentro-ui
+<span class="c"># Ejecutar un CronJob ahora</span>
+kubectl --context oracle -n integracentro-prod create job --from=cronjob/ic-ui-avisos-diarios prueba-manual
+<span class="c"># Consumo (k3s trae metrics-server)</span>
+kubectl --context oracle top pods -A</pre>
+</section>
+
+<!-- ======================================================================= 10 -->
+<section class="leccion" id="iac" data-titulo="Infraestructura como código: Terraform" data-grupo="Plataforma">
+  <span class="etiqueta">Lección 10 · Terraform</span>
+  <h1>Cuatro stacks de Terraform y cómo se encadenan</h1>
+  <p class="entrada">La infraestructura está dividida en <b>stacks</b> independientes, cada uno con su estado, su ciclo de vida y su nivel de riesgo.</p>
+
+  <figure class="diagrama"><pre class="mermaid">
+flowchart LR
+  O["infra/terraform/oracle<br/>cuota, compartimento, red, VM"] -->|"ip_publica"| S["make servidor<br/>Ansible: Docker, k3s, NGINX, runners"]
+  S --> K["infra/terraform/k3s-oracle<br/>namespace + PVCs"]
+  CF["infra/terraform/cloudflare<br/>túnel, DNS, Access, correo"] -->|"token_conector"| A["Ansible app<br/>Secret + Deployment cloudflared"]
+  K -->|"terraform output -json"| A
+  L["infra/terraform/local-minikube<br/>namespace + PVCs"] -.->|"ambiente local"| A
+  </pre><figcaption>Solo <code>k3s-oracle</code> (o <code>local-minikube</code>) corre en cada despliegue. <code>oracle</code> y <code>cloudflare</code> se aplican a mano cuando cambian, porque tocan cosas caras de recrear.</figcaption></figure>
+
+  <h2 id="stacks">Los stacks</h2>
+  <div class="tabla"><table><thead><tr><th>Stack</th><th>Provider</th><th>Recursos</th><th>Estado</th><th>Quién lo aplica</th></tr></thead><tbody>
+    <tr><td><code>oracle</code></td><td><code>oracle/oci ~> 7.0</code></td><td>Cuota de capa gratuita, compartimento, VCN 10.10.0.0/16, gateway, rutas, security list solo SSH, subred, VM ARM</td><td>Local, fuera del repo</td><td><code>make oracle</code> a mano</td></tr>
+    <tr><td><code>k3s-oracle</code></td><td><code>hashicorp/kubernetes ~> 2.23</code></td><td>Namespace <code>integracentro-prod</code>, 2 PVC <code>local-path</code></td><td>Secret en <code>kube-system</code></td><td>CD en cada push</td></tr>
+    <tr><td><code>local-minikube</code></td><td><code>hashicorp/kubernetes</code></td><td>Igual, con <code>standard</code> y RWX</td><td>Secret en Minikube</td><td><code>make infra</code> en la Mac; CI lo valida</td></tr>
+    <tr><td><code>cloudflare</code></td><td><code>cloudflare/cloudflare ~> 5.0</code>, <code>random</code></td><td>Túnel, su configuración de ingreso, CNAME por app, políticas de Access, MX y SPF del correo</td><td>Local, fuera del repo (contiene el secreto del túnel)</td><td><code>make dominios</code> a mano</td></tr>
+  </tbody></table></div>
+
+  <h2 id="backends">Backends de estado: por qué cada uno</h2>
+  <ul>
+    <li><b><code>backend "kubernetes"</code></b> para los stacks del clúster: el estado vive como Secret dentro del propio clúster. Lo comparten la terminal y el runner (que hace checkout en otra carpeta) sin un bucket externo, y el backend usa un Lease como candado contra aplicaciones simultáneas.</li>
+    <li><b><code>backend "local"</code></b> con ruta fuera del repo (<code>-backend-config="path=$HOME/.integracentro/terraform/…"</code>) para <code>oracle</code> y <code>cloudflare</code>: su estado contiene identificadores y secretos, y no debe ni versionarse ni vivir en el clúster que ese mismo stack crea (el huevo y la gallina).</li>
+  </ul>
+
+  <h2 id="patrones-tf">Patrones de Terraform que debes dominar</h2>
+  <div class="rejilla">
+    <div class="tarjeta"><h4><code>prevent_destroy</code></h4><p>En los PVC: un <code>plan</code> que intente destruirlos falla. Protege los datos de un cambio accidental.</p></div>
+    <div class="tarjeta"><h4><code>ignore_changes</code></h4><p>En la VM sobre la imagen: cuando Oracle publica un Ubuntu nuevo no se recrea el servidor.</p></div>
+    <div class="tarjeta"><h4><code>validation</code></h4><p>Variables con reglas: <code>ssh_cidr</code> no puede ser <code>0.0.0.0/0</code>; núcleos ≤ 4, memoria ≤ 24 GB.</p></div>
+    <div class="tarjeta"><h4><code>for_each</code> sobre un mapa</h4><p>En Cloudflare, cada app del mapa <code>aplicaciones</code> genera su DNS, su regla del túnel y (si tiene correos) su política de Access.</p></div>
+    <div class="tarjeta"><h4><code>sensitive</code></h4><p>El token del conector se marca sensible: no aparece en el plan ni en los logs.</p></div>
+    <div class="tarjeta"><h4><code>.terraform.lock.hcl</code></h4><p>Versionado: fija versión y hash de cada provider para que todos descarguen lo mismo.</p></div>
+  </div>
+
+  <h2 id="cuota">La guardia financiera como código</h2>
+  <pre data-archivo="infra/terraform/oracle/cuenta.tf"><span class="k">resource</span> <span class="s">"oci_limits_quota"</span> <span class="s">"capa_gratuita"</span> {
+  statements = [
+    <span class="s">"set compute-core quota standard-a1-core-count to 4 in tenancy"</span>,
+    <span class="s">"set compute-memory quota standard-a1-memory-count to 24 in tenancy"</span>,
+    <span class="s">"set block-storage quota total-storage-gb to 200 in tenancy"</span>,
+  ]
+}</pre>
+  <p>Esto es <b>FinOps</b> aplicado: cualquier intento de crear recursos por encima de la capa gratuita lo rechaza Oracle, venga de la consola, de otro proyecto o de este mismo Terraform.</p>
+
+  <h2 id="red-oracle">La red: superficie de ataque mínima</h2>
+  <p>VCN <code>10.10.0.0/16</code>, subred <code>10.10.1.0/24</code>, gateway de Internet solo para <b>salida</b>. La security list acepta únicamente TCP 22 desde <code>ssh_cidr</code> y el ICMP tipo 3 código 4 (descubrimiento de MTU, necesario para conexiones salientes estables). El puerto 443 no está abierto: la web llega por el túnel.</p>
+
+  <h2 id="flujo-tf">Ciclo de trabajo</h2>
+  <pre>terraform -chdir=infra/terraform/k3s-oracle init      <span class="c"># backend y providers</span>
+terraform -chdir=infra/terraform/k3s-oracle plan -out=tfplan
+terraform -chdir=infra/terraform/k3s-oracle apply tfplan   <span class="c"># aplica EXACTAMENTE lo revisado</span>
+terraform -chdir=infra/terraform/k3s-oracle output -json   <span class="c"># lo que Ansible consume</span></pre>
+  <div class="experto"><b>Nivel experto: duplicación y módulos</b>
+  <code>k3s-oracle</code> y <code>local-minikube</code> son casi idénticos y se repiten en el repo de Gestión. Un módulo <code>modules/app-namespace</code> con variables
+  (<code>storage_class</code>, <code>access_mode</code>, tamaños) eliminaría la duplicación; o un solo stack con <i>workspaces</i>. También conviene migrar el estado local de <code>oracle</code> y <code>cloudflare</code>
+  a un backend remoto con candado (OCI Object Storage es compatible con S3) para no depender de una sola máquina.</div>
+</section>
+
+<!-- ======================================================================= 11 -->
+<section class="leccion" id="ansible" data-titulo="Automatización: Ansible y Makefile" data-grupo="Plataforma">
+  <span class="etiqueta">Lección 11 · Ansible</span>
+  <h1>Despliegue de la aplicación con Ansible</h1>
+  <p class="entrada">Ansible es el «operador» que ejecuta, en orden e idempotentemente, todo lo que cambia con cada versión. Corre en <code>localhost</code> y habla con la API de Kubernetes con la colección <code>kubernetes.core</code>.</p>
+
+  <h2 id="makefile">El Makefile: una sola interfaz</h2>
+  <div class="tabla"><table><thead><tr><th>Objetivo</th><th>Qué ejecuta</th></tr></thead><tbody>
+    <tr><td><code>make desplegar</code></td><td>prerequisitos → infra → app → verificar</td></tr>
+    <tr><td><code>make prerequisitos</code></td><td><code>playbooks/prerequisitos.yml</code></td></tr>
+    <tr><td><code>make infra-plan</code> / <code>make infra</code></td><td>Terraform del ambiente (<code>TF_DIR</code> según <code>AMBIENTE</code>)</td></tr>
+    <tr><td><code>make app TAG=…</code></td><td><code>playbooks/desplegar-aplicacion.yml -e ui_imagen_tag=…</code></td></tr>
+    <tr><td><code>make verificar</code></td><td><code>playbooks/verificar-aplicacion.yml</code> (pruebas de humo)</td></tr>
+    <tr><td><code>make superadmin CORREO=… NOMBRE=…</code></td><td>Primer superadministrador (solo en terminal, nunca en Actions)</td></tr>
+    <tr><td><code>make escenario-pruebas</code></td><td>Datos de demostración (solo con <code>ambiente: pruebas</code>)</td></tr>
+    <tr><td><code>make dominios-plan</code> / <code>make dominios</code></td><td>Terraform de Cloudflare y guarda el token del conector</td></tr>
+    <tr><td><code>make oracle-plan</code> / <code>make oracle</code></td><td>Terraform del servidor (toma la IP pública actual para SSH)</td></tr>
+    <tr><td><code>make servidor</code></td><td><code>preparar-servidor.yml</code> por SSH con tokens de registro de runners pedidos con <code>gh api</code></td></tr>
+  </tbody></table></div>
+  <p><code>AMBIENTE=local</code> (por omisión) u <code>AMBIENTE=oracle</code> elige el directorio de Terraform y el archivo <code>ansible/ambientes/&lt;ambiente&gt;.yml</code>. Mismo código, dos ambientes: eso es <b>paridad de ambientes</b> (factor X de las 12-Factor Apps).</p>
+
+  <h2 id="playbooks">Los playbooks</h2>
+  <details open><summary><code>desplegar-aplicacion.yml</code>: el corazón del CD (en orden)</summary>
+  <ol class="pasos">
+    <li><b>Leer Terraform</b> (<code>tasks/leer-terraform.yml</code>): init + output -json → namespace y PVCs como facts.</li>
+    <li><b>Etiqueta de imagen</b>: el <code>TAG</code> del CD o el commit local (+ marca de tiempo si hay cambios sin commit).</li>
+    <li><b>Construir la imagen</b> con <code>minikube image build</code> o <code>docker build</code>.</li>
+    <li><b>Secretos que faltan</b>: <code>AUTH_SECRET</code>, token de avisos, contraseña de BD, certificado TLS autofirmado con SAN.</li>
+    <li><b>Enlace con Gestión</b>: par Ed25519 y <code>SERVICIO_TOKEN</code> en <code>~/.integracentro/enlace-admin</code> (permisos 0700/0600) y Secret <code>ic-ui-enlace-admin</code>.</li>
+    <li><b>Limpieza de lo retirado</b>: borra el CronJob y Secret de cobros que se mudaron a Gestión, y variables de entorno obsoletas (el módulo k8s fusiona listas y no las quita solo).</li>
+    <li><b>Configuración opcional</b>: SMTP, Telegram, Google Maps → Secrets presentes o ausentes según existan los archivos.</li>
+    <li><b>PostgreSQL</b>: desplegar, esperar <code>pg_isready</code>, sincronizar la contraseña con el Secret.</li>
+    <li><b>Migraciones</b>: todos los <code>db/*.sql</code> en orden, con <code>psql -v ON_ERROR_STOP=1</code> dentro del pod.</li>
+    <li><b>Catálogo SEPOMEX</b>: descarga a lo más una vez al mes y recarga solo si su huella cambió; si Correos de México no responde, sigue.</li>
+    <li><b>Aplicación</b>: CronJob, Deployment/Service/Ingress (con reintentos si el webhook de validación de NGINX aún no responde) y espera del rollout.</li>
+    <li><b>Túnel</b>: Secret y Deployment de <code>cloudflared</code> si existe el token; si no, se retira.</li>
+  </ol></details>
+  <details><summary><code>verificar-aplicacion.yml</code>: pruebas de humo</summary>
+  <p>Abre un <code>port-forward</code> al Ingress Controller y con <code>curl --resolve --cacert</code> valida HTTPS con el certificado real. Comprueba: <code>/login</code> 200; <code>/centros</code> sin sesión → 307 al login con <code>?siguiente=</code>; API sin sesión → 401; credenciales inválidas → 401; recuperación pública 200; token de recuperación inválido → 400; el SSO redirige a la dirección pública y <b>no</b> a <code>0.0.0.0</code>. También verifica que existan 5 tablas clave y que los dominios públicos respondan 200. Un bloque <code>always</code> cierra el port-forward pase lo que pase.</p></details>
+  <details><summary><code>preparar-servidor.yml</code>: el servidor desde cero</summary>
+  <p>Zona horaria de México, repositorio de HashiCorp, paquetes (docker.io, terraform, ansible-core, python3-kubernetes, socat para port-forward, iptables-persistent, unattended-upgrades), firewall para las redes de k3s, instalación de k3s, kubeconfig con contexto <code>oracle</code>, Ingress NGINX, colecciones de Ansible, y <b>dos runners de GitHub Actions</b> (uno por repo) registrados con etiqueta <code>oracle</code> e instalados como servicio systemd.</p></details>
+  <details><summary><code>prerequisitos.yml</code>, <code>crear-superadmin.yml</code>, <code>escenario-pruebas.yml</code></summary>
+  <ul>
+    <li><b>prerequisitos</b>: verifica herramientas, Docker activo, Minikube encendido y sus addons (ingress, storage-provisioner), y el controlador de Ingress listo.</li>
+    <li><b>crear-superadmin</b>: se niega a correr si <code>GITHUB_ACTIONS=true</code>; genera contraseña temporal y calcula el hash scrypt con los mismos parámetros que <code>crypto.ts</code>.</li>
+    <li><b>escenario-pruebas</b>: termina de inmediato si <code>ambiente != pruebas</code>; carga centros ficticios una sola vez (marca en la bitácora).</li>
+  </ul></details>
+
+  <h2 id="idempotencia">Idempotencia: el concepto clave</h2>
+  <p>Ejecutar el playbook 1 o 100 veces deja el sistema igual. Herramientas usadas: <code>state: present</code> en recursos k8s, <code>creates:</code> en comandos (no regenera llaves si existen), <code>force: false</code> en archivos, <code>changed_when</code> honesto, y secretos «solo si faltan». Es lo que permite correrlo en cada push sin miedo.</p>
+  <div class="experto"><b>Nivel experto: Ansible + plantillas vs Helm/Kustomize/GitOps</b>
+  Las plantillas Jinja2 cumplen el papel de un chart de Helm. Ventaja: un solo lenguaje para construir, migrar y desplegar. Desventaja: no hay «release» con historial como en Helm ni reconciliación continua como en Argo CD/Flux.
+  Una evolución natural: imagen a un registro → manifiestos en Kustomize → Argo CD sincroniza desde Git; las migraciones como Job previo (hook) y Ansible solo para el servidor.</div>
+</section>
+
+<!-- ======================================================================= 12 -->
+<section class="leccion" id="cicd" data-titulo="CI/CD con GitHub Actions" data-grupo="Entrega y operación">
+  <span class="etiqueta">Lección 12 · CI/CD</span>
+  <h1>Del <code>git push</code> a producción</h1>
+  <p class="entrada">Dos workflows por repositorio: <b>1. CI - Build &amp; Validate</b> en runners de GitHub y <b>2. CD - Despliegue en Oracle Cloud</b> en el runner self-hosted del servidor.</p>
+
+  <figure class="diagrama"><pre class="mermaid">
+flowchart TB
+  P["push o PR a main / dev"] --> CI
+  subgraph CI["CI · ubuntu-latest (desechable)"]
+    T["terraform fmt -check + validate"]
+    AN["ansible-playbook --syntax-check"]
+    UI["npm ci · tsc --noEmit · next build · docker build"]
+    PR["Postgres 16 de servicio · npm test · migrar.sh x2 · test:bd"]
+  end
+  CI -->|"workflow_run: completed"| G{"¿éxito + push +<br/>mismo repo + main?"}
+  G -->|"no"| X["no se despliega"]
+  G -->|"sí"| CD
+  subgraph CD["CD · self-hosted Linux ARM64 oracle"]
+    I["Job 1 Infraestructura<br/>make prerequisitos · terraform plan · apply tfplan"]
+    A["Job 2 Aplicación<br/>candado entre repos · make app TAG=commit"]
+    V["Job 3 Verificación<br/>make verificar · escenario-pruebas · resumen"]
+    I --> A --> V
+  end
+  </pre><figcaption>Los cuatro jobs de CI corren en paralelo. El CD se encadena con <code>needs:</code> y despliega exactamente el commit que validó CI (<code>workflow_run.head_sha</code>).</figcaption></figure>
+
+  <h2 id="ci">CI: qué valida y por qué</h2>
+  <div class="tabla"><table><thead><tr><th>Job</th><th>Atrapa</th></tr></thead><tbody>
+    <tr><td>Terraform <code>fmt -check</code> + <code>validate</code> (con <code>init -backend=false</code>, sin clúster)</td><td>Formato inconsistente, sintaxis y referencias rotas.</td></tr>
+    <tr><td>Ansible <code>--syntax-check</code> de cada playbook</td><td>YAML inválido, módulos inexistentes.</td></tr>
+    <tr><td>UI: <code>tsc --noEmit</code>, <code>next build</code>, <code>docker build</code></td><td>Errores de tipos, de compilación y una imagen que no construye.</td></tr>
+    <tr><td>Pruebas (solo certificación): <code>services: postgres:16</code> con healthcheck</td><td>Lógica de motores, migraciones no idempotentes y regresiones contra una BD real.</td></tr>
+  </tbody></table></div>
+  <p><code>actions/setup-node</code> con <code>cache: npm</code> y <code>cache-dependency-path</code> reutiliza la caché de npm entre ejecuciones. <code>permissions: contents: read</code> le da al token de GitHub el mínimo privilegio.</p>
+
+  <h2 id="cd">CD: los candados de seguridad</h2>
+  <pre data-archivo=".github/workflows/cd.yml (extracto)"><span class="k">on:</span>
+  <span class="k">workflow_run:</span> { workflows: [<span class="s">"1. CI - Build &amp; Validate"</span>], types: [completed], branches: [main] }
+  <span class="k">workflow_dispatch:</span>                      <span class="c"># también a mano desde la pestaña Actions</span>
+<span class="k">concurrency:</span> { group: cd-oracle-local, cancel-in-progress: false }   <span class="c"># uno a la vez, sin cancelar</span>
+<span class="k">jobs:</span>
+  <span class="k">infraestructura:</span>
+    <span class="k">if:</span> &gt;-
+      github.event_name == 'workflow_dispatch' || (
+        github.event.workflow_run.conclusion == 'success' &amp;&amp;
+        github.event.workflow_run.event == 'push' &amp;&amp;                    <span class="c"># nunca por un PR</span>
+        github.event.workflow_run.head_repository.full_name == github.repository )  <span class="c"># nunca un fork</span>
+    <span class="k">runs-on:</span> [self-hosted, Linux, ARM64, oracle]
+    <span class="k">environment:</span> oracle                   <span class="c"># permite exigir aprobación manual</span></pre>
+  <div class="alerta"><b>Por qué tanto candado</b>Un runner self-hosted ejecuta código del repositorio <i>con acceso al clúster de producción</i>. Si un PR de un tercero pudiera disparar el CD, podría ejecutar cualquier comando en tu servidor. La regla: el CD solo corre por <code>push</code> a <code>main</code> del propio repo después de un CI exitoso.</div>
+  <ul>
+    <li><b><code>cancel-in-progress: false</code></b>: un despliegue a medias (con migraciones aplicadas) es peor que esperar. El siguiente espera al anterior.</li>
+    <li><b><code>shell: bash</code> explícito</b> = <code>bash -eo pipefail</code>: un <code>terraform plan | tee</code> que falla detiene el job (sin <code>pipefail</code>, <code>tee</code> «tendría éxito»).</li>
+    <li><b><code>terraform plan -out=tfplan</code> + <code>apply tfplan</code></b>: se aplica exactamente el plan mostrado, y un resumen va a <code>$GITHUB_STEP_SUMMARY</code>.</li>
+    <li><b>Orden entre repos:</b> la certificación se despliega primero porque genera el enlace (llave pública y token) que Gestión necesita; el playbook de Gestión se detiene con instrucciones si no lo encuentra.</li>
+  </ul>
+
+  <h2 id="estrategia">Estrategia de ramas y de despliegue</h2>
+  <p><b>Trunk-based</b>: <code>main</code> es producción y se despliega en cada push verde; <code>dev</code> solo pasa por CI. El rollout de Kubernetes con 2 réplicas y readiness probes da un despliegue <b>rolling sin caída</b>. Rollback: <code>kubectl rollout undo</code> (la imagen anterior sigue en Docker del nodo) o revertir el commit y dejar que el pipeline despliegue.</p>
+
+  <div class="experto"><b>Nivel experto: métricas DORA y lo que falta</b>
+  Este pipeline ya permite alta <b>frecuencia de despliegue</b> y bajo <b>lead time</b>. Para mejorar <b>tasa de fallos</b> y <b>tiempo de recuperación</b>: pruebas para Gestión (hoy su CI no ejecuta pruebas),
+  escaneo de seguridad (CodeQL, <code>npm audit</code>, Trivy), Dependabot/Renovate, compilar la imagen una vez en CI y desplegar ese mismo artefacto (hoy se construye dos veces: en CI x86 para validar y en el servidor ARM para desplegar),
+  y migraciones compatibles hacia atrás (expand/contract) para que un rollback de la app no choque con el esquema nuevo.</div>
+</section>
+
+<!-- ======================================================================= 13 -->
+<section class="leccion" id="red" data-titulo="Red y borde: Cloudflare" data-grupo="Entrega y operación">
+  <span class="etiqueta">Lección 13 · Redes</span>
+  <h1>Cómo entra una petición sin puertos abiertos</h1>
+
+  <figure class="diagrama"><pre class="mermaid">
+sequenceDiagram
+  participant N as Navegador
+  participant D as DNS Cloudflare
+  participant E as Borde Cloudflare
+  participant C as cloudflared (pod)
+  participant S as Service k8s
+  participant P as Pod Next.js
+  Note over C,E: Al arrancar, cloudflared abre conexiones SALIENTES persistentes a Cloudflare
+  N->>D: certificacion.cj-iap.org ?
+  D-->>N: IP de Cloudflare (CNAME proxied al túnel)
+  N->>E: HTTPS (certificado válido de Cloudflare)
+  E->>E: termina TLS, WAF, DDoS, Access si aplica
+  E->>C: petición por el túnel existente
+  C->>C: regla de ingreso: hostname → servicio
+  C->>S: http://integracentro-ui.integracentro-prod.svc.cluster.local:80
+  S->>P: puerto 3000 de un pod listo
+  P-->>N: respuesta por el mismo camino
+  </pre></figure>
+
+  <h2 id="tunel">Cloudflare Tunnel</h2>
+  <ul>
+    <li>Terraform crea el túnel (<code>config_src = "cloudflare"</code>: la configuración vive en Cloudflare, no en el pod), sus reglas de ingreso por hostname y un registro <b>CNAME</b> <code>&lt;id&gt;.cfargotunnel.com</code> con <code>proxied = true</code> por aplicación. Cualquier otro hostname responde <code>http_status:404</code>.</li>
+    <li>El pod <code>cloudflared</code> solo lleva el <code>TUNNEL_TOKEN</code>. Tiene 2 réplicas (dos conexiones independientes), <code>runAsNonRoot</code>, versión fija, y probes sobre <code>/ready</code> del puerto de métricas 2000 (200 cuando hay al menos una conexión activa).</li>
+    <li>Mover el clúster a otro servidor = levantar el conector allá. El DNS no cambia.</li>
+  </ul>
+
+  <h2 id="access">Cloudflare Access (Zero Trust)</h2>
+  <p>Para aplicaciones sin usuarios propios, el mapa <code>aplicaciones</code> acepta una lista de <code>correos</code>: Terraform crea una política y una aplicación de Access, y Cloudflare pide un código enviado al correo <b>antes</b> de dejar pasar el tráfico al túnel. Es autenticación en el borde, sin tocar el código de la app.</p>
+
+  <h2 id="tls">TLS en dos tramos</h2>
+  <p>Navegador ↔ Cloudflare: TLS con certificado público. Cloudflare ↔ conector: túnel cifrado. Conector → Service: HTTP plano <i>dentro</i> del nodo. Las cookies llevan <code>Secure</code> porque el navegador sí ve HTTPS. Como el pod recibe HTTP con dirección interna, Next.js ve <code>request.url = http://0.0.0.0:3000</code>; por eso <code>lib/redireccion.ts</code> responde redirecciones con <code>Location</code> <b>relativa</b> y <code>actas/origen.ts</code> reconstruye el origen público con <code>X-Forwarded-*</code>.</p>
+
+  <h2 id="dns-correo">DNS del correo</h2>
+  <p>El mismo stack administra los registros <b>MX</b> y <b>SPF</b> (<code>v=spf1 include:secureserver.net -all</code>) del dominio, porque el proveedor de correo rechaza como remitente una dirección de un dominio sin MX. Que la plataforma envíe avisos que no caigan en spam depende de estos registros (más DKIM y DMARC, que conviene agregar).</p>
+
+  <div class="experto"><b>Nivel experto: lo que el túnel no resuelve</b>
+  El túnel elimina puertos entrantes, pero el SSH sigue expuesto a una red. Endurecimiento posible: SSH también por Cloudflare (<code>cloudflared access ssh</code>) o por el Bastion de Oracle, y cerrar el 22.
+  Además, dentro del clúster no hay <b>NetworkPolicies</b>: cualquier pod podría hablar con la base del otro namespace. Con Flannel de k3s se activan con el controlador de políticas que trae k3s; una política «default deny» por namespace más reglas explícitas cerraría ese hueco.</div>
+</section>
+
+<!-- ======================================================================= 14 -->
+<section class="leccion" id="integraciones" data-titulo="Integraciones externas" data-grupo="Entrega y operación">
+  <span class="etiqueta">Lección 14 · Integraciones</span>
+  <h1>Servicios de terceros y cómo se integran con seguridad</h1>
+  <div class="tabla"><table><thead><tr><th>Servicio</th><th>App</th><th>Para qué</th><th>Cómo se protege</th></tr></thead><tbody>
+    <tr><td><b>Mercado Pago</b> Checkout Pro</td><td>Gestión</td><td>Pagos con tarjeta, OXXO y SPEI. Cada centro usa su propia cuenta.</td><td>Access Token validado y cifrado AES-GCM; nunca se muestra. El webhook no se cree: se consulta el pago a la API. La tarjeta nunca pasa por MIA Clara (alcance PCI mínimo).</td></tr>
+    <tr><td><b>SMTP</b> (nodemailer)</td><td>Ambas</td><td>Recuperación de contraseña, recibos con PDF, avisos.</td><td>Credenciales en Secret desde <code>smtp.env</code>; plantilla con escape HTML.</td></tr>
+    <tr><td><b>Telegram Bot API</b></td><td>Ambas (webhook en Gestión)</td><td>Avisos gratuitos al personal y familias.</td><td>Enlace de un solo uso (se guarda su huella), token secreto del webhook, mensajes sin datos personales.</td></tr>
+    <tr><td><b>WhatsApp Cloud API</b></td><td>Gestión</td><td>Recordatorios del aniversario (con costo por mensaje).</td><td>Plantillas aprobadas por Meta, firma <code>X-Hub-Signature-256</code>, consentimiento del servidor.</td></tr>
+    <tr><td><b>Google Cloud TTS</b></td><td>Gestión</td><td>Voz natural en español latino para el ensayo de juntas.</td><td>Opcional; audios en caché (<code>voz_audios</code>) y consumo medido (<code>voz_consumo</code>) para controlar costo.</td></tr>
+    <tr><td><b>Nominatim / OpenStreetMap</b></td><td>Certificación</td><td>Geocodificar el domicilio del centro.</td><td>Respeta su política (correo de contacto); Google Geocoding opcional con clave.</td></tr>
+    <tr><td><b>SEPOMEX</b> (Correos de México)</td><td>Ambas</td><td>Autocompletar domicilio por código postal.</td><td>Se descarga en el despliegue (no se redistribuye), máximo una vez al mes, con huella para recargar solo si cambió.</td></tr>
+  </tbody></table></div>
+  <h2 id="patron-integracion">Patrones de integración aplicados</h2>
+  <ul>
+    <li><b>Degradación elegante:</b> sin SMTP no hay correos pero la app funciona; sin Telegram, solo correo; sin Google, OpenStreetMap. Cada Secret opcional se monta con <code>optional: true</code>.</li>
+    <li><b>Nunca confiar en el aviso entrante:</b> el webhook es solo un «despertador»; la verdad se consulta a la fuente.</li>
+    <li><b>Idempotencia:</b> pagos y avisos se registran para no aplicarse dos veces.</li>
+    <li><b>Minimización de datos:</b> lo que sale a terceros (Telegram, WhatsApp) no lleva nombres ni diagnósticos.</li>
+  </ul>
+</section>
+
+<!-- ======================================================================= 15 -->
+<section class="leccion" id="operacion" data-titulo="Operación y runbooks" data-grupo="Entrega y operación">
+  <span class="etiqueta">Lección 15 · Operación (SRE)</span>
+  <h1>Operar, diagnosticar y recuperar</h1>
+
+  <h2 id="runbooks">Runbooks</h2>
+  <details open><summary>El sitio no responde</summary>
+  <ol class="pasos">
+    <li>¿Responde el borde? <code>curl -I https://certificacion.cj-iap.org/login</code>. Un error 1033 de Cloudflare = el túnel no tiene conector activo.</li>
+    <li><code>kubectl -n integracentro-prod get pods</code>: ¿<code>cloudflared</code> y <code>integracentro-ui</code> están <code>Running</code> y <code>READY 1/1</code>?</li>
+    <li><code>kubectl describe pod</code> y revisa los eventos: <code>ErrImageNeverPull</code> (la imagen no está en el nodo), <code>CrashLoopBackOff</code> (mira <code>logs --previous</code>), <code>OOMKilled</code> (sube el límite de memoria).</li>
+    <li>Si el último despliegue lo rompió: <code>kubectl rollout undo deployment/integracentro-ui</code>.</li>
+  </ol></details>
+  <details><summary>La base no arranca</summary>
+  <p>Revisa <code>kubectl logs deploy/ic-ui-postgres</code>. Con <code>Recreate</code>, un pod viejo atorado en <code>Terminating</code> impide montar el volumen: espera o fuerza su borrado. Si cambió la contraseña del Secret, el playbook la resincroniza con <code>ALTER USER</code>.</p></details>
+  <details><summary>Un despliegue se queda esperando</summary>
+  <p>Otro repo tiene el candado <code>/tmp/integracentro-despliegue.lock</code>. Si el otro despliegue murió, el candado se considera abandonado a los 30 minutos. También revisa que el runner esté «online»: <code>gh api repos/OWNER/REPO/actions/runners</code>.</p></details>
+  <details><summary>Disco lleno en el nodo</summary>
+  <p>Cada despliegue deja una imagen nueva. Lista con <code>docker images | grep integracentro</code> y borra etiquetas viejas que ningún pod use; <code>docker image prune</code> elimina capas colgantes. Revisa también <code>/var/lib/rancher/k3s/storage</code> (los PVC de local-path).</p></details>
+
+  <h2 id="observabilidad">Observabilidad actual</h2>
+  <ul>
+    <li><b>Logs:</b> salida estándar de los contenedores, vía <code>kubectl logs</code> (se pierden al recrear el pod).</li>
+    <li><b>Salud:</b> probes de Kubernetes y pruebas de humo en cada despliegue.</li>
+    <li><b>Auditoría de negocio:</b> <code>bitacora_auditoria</code> en ambas apps (quién, qué, cuándo, en qué centro).</li>
+    <li><b>Métricas:</b> <code>kubectl top</code> con metrics-server; métricas de <code>cloudflared</code> en su puerto 2000; analítica de Cloudflare.</li>
+  </ul>
+  <div class="experto"><b>Nivel experto: los tres pilares que faltan</b>
+  Ligero y gratis para un nodo: <b>métricas</b> con Prometheus + Grafana (o Grafana Cloud free tier) y alertas por Telegram; <b>logs</b> centralizados con Loki + Promtail;
+  <b>monitoreo externo</b> sintético (UptimeRobot, Healthchecks.io para confirmar que los CronJobs corrieron). Define SLO simples: 99 % de disponibilidad mensual y CronJob diario ejecutado.
+  Sin medir, no sabes si cumples.</div>
+
+  <h2 id="capacidad">Capacidad del nodo</h2>
+  <p>Solicitudes de memoria: 2 × 256 Mi (UI) + 256 Mi (BD) + 2 × 64 Mi (túnel), y lo mismo para Gestión: unos 1,6 GiB reservados de 12 GB, y el build de Next.js en el mismo nodo es el pico real de consumo. Hay espacio de sobra; el cuello de botella sería CPU durante builds simultáneos, de ahí el candado.</p>
+</section>
+
+<!-- ======================================================================= 16 -->
+<section class="leccion" id="evolucion" data-titulo="Evolución y deuda técnica" data-grupo="Nivel experto">
+  <span class="etiqueta">Lección 16 · Arquitectura evolutiva</span>
+  <h1>Qué mejorar y cuándo: la siguiente versión</h1>
+  <p class="entrada">Un arquitecto experto no solo describe lo que existe: identifica riesgos, los prioriza y propone una evolución que respete el contexto. Esta es una revisión honesta.</p>
+
+  <h2 id="riesgos">Riesgos priorizados</h2>
+  <div class="tabla"><table><thead><tr><th>#</th><th>Riesgo</th><th>Impacto</th><th>Mitigación propuesta</th><th>Esfuerzo</th></tr></thead><tbody>
+    <tr><td>1</td><td>Sin respaldos de BD ni de archivos</td><td>Pérdida total de datos si falla el disco</td><td>CronJob <code>pg_dump</code> + copia de PVC a OCI Object Storage cifrado; prueba de restauración mensual</td><td>Bajo</td></tr>
+    <tr><td>2</td><td>Un solo nodo</td><td>Caída total ante falla del servidor</td><td>Runbook de reconstrucción probado (todo es código); a futuro, segundo nodo o servicio administrado</td><td>Medio</td></tr>
+    <tr><td>3</td><td>PostgreSQL 15 en producción y 16 en CI</td><td>Pruebas que no reflejan producción</td><td>Unificar en 16 o 17 con <code>pg_upgrade</code> o dump/restore planeado</td><td>Bajo</td></tr>
+    <tr><td>4</td><td>Node 20 fuera de soporte</td><td>Parches de seguridad</td><td>Migrar la imagen a Node 22/24 LTS</td><td>Bajo</td></tr>
+    <tr><td>5</td><td>Sin NetworkPolicies</td><td>Movimiento lateral entre namespaces</td><td>Default deny + reglas explícitas</td><td>Bajo</td></tr>
+    <tr><td>6</td><td>Secrets sin cifrar en etcd/SQLite</td><td>Exposición si se copia el disco</td><td><code>--secrets-encryption</code> de k3s; a futuro External Secrets + OCI Vault</td><td>Bajo</td></tr>
+    <tr><td>7</td><td>Gestión sin pruebas automáticas</td><td>Regresiones en dinero y datos clínicos</td><td>Replicar el esquema de pruebas de la certificación (motores puros + BD real)</td><td>Medio</td></tr>
+    <tr><td>8</td><td>Build en el nodo de producción</td><td>Picos de CPU, artefacto distinto al probado</td><td>Construir ARM64 en CI con buildx, publicar en GHCR/OCIR y desplegar por digest</td><td>Medio</td></tr>
+    <tr><td>9</td><td>Observabilidad mínima</td><td>Fallas silenciosas</td><td>Prometheus/Grafana/Loki ligeros o servicio gratuito; alertas por Telegram</td><td>Medio</td></tr>
+    <tr><td>10</td><td>Duplicación entre repos (crypto, totp, db, Terraform)</td><td>Correcciones que se aplican en un lado y no en otro</td><td>Paquete compartido (workspace npm) o monorepo; módulos de Terraform</td><td>Medio</td></tr>
+  </tbody></table></div>
+
+  <h2 id="v2">Arquitectura objetivo (v2) si el sistema crece</h2>
+  <figure class="diagrama"><pre class="mermaid">
+flowchart LR
+  GH["GitHub"] -->|"CI: build arm64, test, scan, SBOM"| REG["Registro GHCR/OCIR"]
+  GH -->|"manifiestos Kustomize"| ARGO["Argo CD en el clúster"]
+  ARGO --> K8S["k3s HA 3 nodos u OKE"]
+  REG --> K8S
+  K8S --> CNPG[("CloudNativePG<br/>primaria + réplica")]
+  CNPG -->|"WAL + backups"| OBJ["Object Storage"]
+  K8S -->|"archivos"| OBJ
+  K8S --> OBS["Prometheus · Loki · Grafana"]
+  VAULT["OCI Vault"] -->|"External Secrets"| K8S
+  CF["Cloudflare Tunnel + Access"] --> K8S
+  </pre><figcaption>No es «mejor» en abstracto: duplica la complejidad operativa. Se justifica con más centros, un SLA o un equipo mayor.</figcaption></figure>
+
+  <h2 id="principios-evolucion">Principios para evolucionar sin romper</h2>
+  <ul>
+    <li><b>Strangler fig:</b> mover piezas una a una (primero archivos a Object Storage, luego registro de imágenes, luego GitOps), nunca reescribir todo.</li>
+    <li><b>Migraciones expand/contract:</b> agregar columna → escribir en ambas → migrar lectura → quitar la vieja, en despliegues distintos.</li>
+    <li><b>Fitness functions:</b> pruebas automáticas que vigilan atributos (p. ej., que ninguna consulta de un tenant sin <code>centro_id</code> pase revisión, tiempos de respuesta, tamaño de imagen).</li>
+    <li><b>Documentar con ADRs:</b> agregar <code>docs/adr/NNN-titulo.md</code> a los repos; cada decisión de esta guía cabe en uno.</li>
+  </ul>
+</section>
+
+<!-- ======================================================================= 17 -->
+<section class="leccion" id="laboratorios" data-titulo="Laboratorios prácticos" data-grupo="Nivel experto">
+  <span class="etiqueta">Lección 17 · Práctica</span>
+  <h1>Laboratorios: aprende haciendo</h1>
+  <p class="entrada">Hazlos en tu Mac con Minikube (<code>AMBIENTE=local</code>), nunca contra producción. Cada uno tiene un objetivo verificable.</p>
+
+  <h3 id="lab1">Lab 1 · Levanta todo desde cero</h3>
+  <pre>cd ~/Documents/integracentro-core
+make desplegar                      <span class="c"># prerrequisitos → Terraform → Ansible → humo</span>
+kubectl --context minikube get all -n integracentro-prod
+make superadmin CORREO=tu@correo NOMBRE="Tu Nombre"</pre>
+  <p><b>Objetivo:</b> entrar a <code>https://integracentro.local</code>, cambiar la contraseña y enrolar MFA. <b>Pregunta:</b> ¿qué Secrets se crearon y cuál nunca debe regenerarse?</p>
+
+  <h3 id="lab2">Lab 2 · Lee el estado de Terraform dentro del clúster</h3>
+  <pre>kubectl --context minikube -n kube-system get secret | grep tfstate
+terraform -chdir=infra/terraform/local-minikube output -json</pre>
+  <p><b>Objetivo:</b> explicar por qué el estado vive ahí y qué pasaría si dos personas aplicaran a la vez.</p>
+
+  <h3 id="lab3">Lab 3 · Provoca y repara un rollout fallido</h3>
+  <pre>kubectl -n integracentro-prod set image deployment/integracentro-ui ui=integracentro-ui:no-existe
+kubectl -n integracentro-prod get pods -w          <span class="c"># observa ErrImageNeverPull</span>
+kubectl -n integracentro-prod rollout undo deployment/integracentro-ui</pre>
+  <p><b>Objetivo:</b> comprobar que con 2 réplicas y readiness probes el sitio <b>siguió respondiendo</b> durante la falla.</p>
+
+  <h3 id="lab4">Lab 4 · Demuestra la idempotencia</h3>
+  <pre>make app          <span class="c"># dos veces seguidas</span>
+make app
+cd integracentro-ui &amp;&amp; DATABASE_URL=... pruebas/bd/migrar.sh</pre>
+  <p><b>Objetivo:</b> que la segunda ejecución no cambie datos ni falle. Luego escribe una migración nueva <code>020_prueba.sql</code> que <i>no</i> sea idempotente y observa cómo la atrapa <code>migrar.sh</code>.</p>
+
+  <h3 id="lab5">Lab 5 · Revocación de sesión en vivo</h3>
+  <p>Entra con un usuario en dos navegadores. Desde el superadmin restablece su MFA. Recarga el otro navegador: debe volver al login. <b>Explica</b> qué columna cambió y en qué función se detectó.</p>
+
+  <h3 id="lab6">Lab 6 · Ejecuta un CronJob a mano</h3>
+  <pre>kubectl -n integracentro-prod create job --from=cronjob/ic-ui-avisos-diarios manual-1
+kubectl -n integracentro-prod logs job/manual-1</pre>
+  <p><b>Objetivo:</b> correrlo dos veces y verificar en las tablas de avisos que no se duplicaron envíos.</p>
+
+  <h3 id="lab7">Lab 7 · Optimiza el Dockerfile</h3>
+  <p>Reordena para copiar primero <code>package*.json</code>, construye dos veces cambiando un solo <code>.tsx</code> y compara tiempos con <code>docker build --progress=plain</code>. Mide el tamaño final con <code>docker images</code>.</p>
+
+  <h3 id="lab8">Lab 8 · Escribe el respaldo que falta</h3>
+  <p>Crea una plantilla <code>ui-respaldo.yaml.j2</code> con un CronJob que use <code>postgres:15-alpine</code>, lea <code>DATABASE_URL</code> del Secret y ejecute <code>pg_dump | gzip</code> a un PVC de respaldos. Luego restaura ese archivo en una BD nueva y compara conteos de tablas. Es la mejora #1 del proyecto.</p>
+
+  <h3 id="lab9">Lab 9 · NetworkPolicy</h3>
+  <p>Escribe una política que solo permita llegar a <code>ic-ui-postgres:5432</code> desde pods <code>app=integracentro-ui</code>. Pruébala con <code>kubectl run -it --rm prueba --image=postgres:15-alpine -- psql -h ic-ui-postgres</code> desde otro pod.</p>
+
+  <h3 id="lab10">Lab 10 · Diseña un ADR</h3>
+  <p>Escribe un ADR (contexto, decisión, alternativas, consecuencias) para «Mover las evidencias a Object Storage». Incluye costo, migración de los archivos existentes y cómo cambia <code>lib/evidencias/almacen.ts</code>.</p>
+</section>
+
+<!-- ======================================================================= 18 -->
+<section class="leccion" id="archivos" data-titulo="Explorador de archivos" data-grupo="Referencia">
+  <span class="etiqueta">Lección 18 · Referencia</span>
+  <h1>El propósito de cada archivo de los dos repositorios</h1>
+  <p class="entrada">Los 792 archivos versionados de <code>integracentro-core</code> e <code>integracentro-admin</code>, con su capa y su propósito. Filtra por texto, aplicación o capa.</p>
+  <div class="explorador-filtros">
+    <input type="search" id="filtro-texto" placeholder="Buscar archivo o propósito (p. ej. session, Dockerfile, farmacia)">
+    <select id="filtro-repo"><option value="">Ambos repositorios</option><option value="certificacion">Certificación</option><option value="gestion">Gestión</option></select>
+    <select id="filtro-capa"><option value="">Todas las capas</option></select>
+    <span class="contador" id="contador-archivos"></span>
+  </div>
+  <div class="arbol" id="arbol"></div>
+</section>
+
+<!-- ======================================================================= 19 -->
+<section class="leccion" id="glosario" data-titulo="Glosario" data-grupo="Referencia">
+  <span class="etiqueta">Lección 19 · Referencia</span>
+  <h1>Glosario</h1>
+  <div class="tabla"><table><thead><tr><th>Término</th><th>Definición en este proyecto</th></tr></thead><tbody>
+    <tr><td>ADR</td><td>Registro de una decisión de arquitectura: contexto, decisión, alternativas, consecuencias.</td></tr>
+    <tr><td>App Router</td><td>Sistema de rutas de Next.js basado en carpetas dentro de <code>src/app</code>.</td></tr>
+    <tr><td>C4</td><td>Modelo de diagramas en 4 niveles: contexto, contenedores, componentes, código.</td></tr>
+    <tr><td>ClusterIP</td><td>Tipo de Service de Kubernetes accesible solo dentro del clúster.</td></tr>
+    <tr><td>CronJob</td><td>Objeto de Kubernetes que crea un Job según un horario cron.</td></tr>
+    <tr><td>Ed25519</td><td>Algoritmo de firma de curva elíptica; firma el pase del SSO.</td></tr>
+    <tr><td>HKDF</td><td>Función para derivar varias claves independientes de un secreto.</td></tr>
+    <tr><td>HMAC</td><td>Firma con clave simétrica que garantiza integridad; usada en cookies.</td></tr>
+    <tr><td>Idempotente</td><td>Operación que da el mismo resultado si se ejecuta una o muchas veces.</td></tr>
+    <tr><td>Ingress</td><td>Objeto que enruta HTTP(S) por host y ruta hacia Services.</td></tr>
+    <tr><td>k3s</td><td>Distribución ligera y certificada de Kubernetes.</td></tr>
+    <tr><td>local-path</td><td>Aprovisionador de k3s que crea volúmenes en el disco del nodo.</td></tr>
+    <tr><td>Multi-tenant</td><td>Varios clientes (centros) en la misma instancia, aislados por <code>centro_id</code>.</td></tr>
+    <tr><td>Probe</td><td>Chequeo de salud: readiness (recibe tráfico) y liveness (reiniciar).</td></tr>
+    <tr><td>Proxy (Next.js 16)</td><td>Código que corre antes de cada petición; antes se llamaba middleware.</td></tr>
+    <tr><td>PVC</td><td>PersistentVolumeClaim: solicitud de almacenamiento persistente.</td></tr>
+    <tr><td>RBAC</td><td>Control de acceso basado en roles.</td></tr>
+    <tr><td>Route Handler</td><td>Archivo <code>route.ts</code> que implementa un endpoint HTTP.</td></tr>
+    <tr><td>RWO / RWX</td><td>ReadWriteOnce (un nodo) / ReadWriteMany (varios nodos) en volúmenes.</td></tr>
+    <tr><td>Runner self-hosted</td><td>Agente de GitHub Actions instalado en una máquina propia.</td></tr>
+    <tr><td>scrypt</td><td>Función de derivación lenta y costosa en memoria para contraseñas.</td></tr>
+    <tr><td>Server Component</td><td>Componente React que se ejecuta solo en el servidor.</td></tr>
+    <tr><td>sesion_version</td><td>Contador por usuario que invalida todas sus sesiones al cambiar.</td></tr>
+    <tr><td>SSO</td><td>Inicio de sesión único: una cuenta para varias aplicaciones.</td></tr>
+    <tr><td>Standalone</td><td>Modo de salida de Next.js que genera un servidor Node autocontenido.</td></tr>
+    <tr><td>Terraform state</td><td>Registro de lo que Terraform administra; base para calcular diferencias.</td></tr>
+    <tr><td>TOTP</td><td>Código de un solo uso basado en tiempo (RFC 6238), el MFA.</td></tr>
+    <tr><td>Túnel (Cloudflare)</td><td>Conexión saliente que publica servicios sin abrir puertos.</td></tr>
+    <tr><td>workflow_run</td><td>Disparador de GitHub Actions que reacciona al fin de otro workflow.</td></tr>
+  </tbody></table></div>
+  <h2 id="siguientes-pasos">Para seguir: certificaciones y lecturas</h2>
+  <ul>
+    <li><b>Kubernetes:</b> CKA y CKAD (Linux Foundation). Practica con este clúster en Minikube.</li>
+    <li><b>Terraform:</b> HashiCorp Terraform Associate.</li>
+    <li><b>Arquitectura:</b> TOGAF; libros <i>Fundamentals of Software Architecture</i> (Richards y Ford), <i>Designing Data-Intensive Applications</i> (Kleppmann), <i>Building Evolutionary Architectures</i>.</li>
+    <li><b>DevOps/SRE:</b> <i>Accelerate</i> (métricas DORA), <i>Site Reliability Engineering</i> de Google, <i>The Twelve-Factor App</i>.</li>
+    <li><b>Seguridad:</b> OWASP Top 10 y ASVS; <i>Threat Modeling</i> (Shostack).</li>
+  </ul>
+</section>
+
+<!-- ======================================================================= 20 -->
+<section class="leccion" id="examen" data-titulo="Examen de autoevaluación" data-grupo="Referencia">
+  <span class="etiqueta">Lección 20 · Evaluación</span>
+  <h1>Examen: ¿ya eres experto en este sistema?</h1>
+  <p class="entrada">Elige una respuesta; verás la explicación al instante. Con 80 % o más estás listo para defender esta arquitectura.</p>
+  <div id="examen-preguntas"></div>
+  <div class="marcador" id="marcador"></div>
+</section>
+
+  </main>
+</div>
+
+<script src="assets/archivos.js"></script>
+<script src="assets/preguntas.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
